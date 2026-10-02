@@ -49,7 +49,12 @@ export const siteConfig = {
   description:
     "The music library for DJs and audiophiles on Mac: bit-perfect sound, a clean collection and a DJ mixer, in one app.",
   cta: "Notify me at launch",
-  url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  // Sur Vercel, retombe sur le domaine de production si NEXT_PUBLIC_APP_URL n'est pas défini.
+  url:
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000"),
   keywords: [
     "bit-perfect audio player Mac",
     "DJ music library",

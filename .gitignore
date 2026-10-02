@@ -52,3 +52,5 @@ next-env.d.ts
 /public/iphone.png
 /public/download-*.svg
 /public/og.png
+.env*
+!.env.example
