@@ -16,21 +16,23 @@ const formatTime = (s: number) =>
   `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 // Forme d'onde décorative aux couleurs des bandes (graves rouges, médiums verts, aigus bleus).
+function makeBars(count: number) {
+  let seed = 7;
+  const rand = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  return Array.from({ length: count }, (_, i) => {
+    const section = Math.sin(i / 9) * 0.25 + 0.65;
+    const h = Math.max(0.12, Math.min(1, section * (0.55 + rand() * 0.6)));
+    const r = rand();
+    const color = r < 0.55 ? "#E5484D" : r < 0.82 ? "#46C46E" : "#3E8BFF";
+    return { h, color };
+  });
+}
+
 function useBars(count: number) {
-  return useMemo(() => {
-    let seed = 7;
-    const rand = () => {
-      seed = (seed * 16807) % 2147483647;
-      return seed / 2147483647;
-    };
-    return Array.from({ length: count }, (_, i) => {
-      const section = Math.sin(i / 9) * 0.25 + 0.65;
-      const h = Math.max(0.12, Math.min(1, section * (0.55 + rand() * 0.6)));
-      const r = rand();
-      const color = r < 0.55 ? "#E5484D" : r < 0.82 ? "#46C46E" : "#3E8BFF";
-      return { h, color };
-    });
-  }, [count]);
+  return useMemo(() => makeBars(count), [count]);
 }
 
 function Waveform({ progress }: { progress: number }) {

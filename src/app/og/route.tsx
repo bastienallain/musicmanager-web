@@ -1,8 +1,8 @@
 import { palette, siteConfig } from "@/lib/config";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-
-export const runtime = "edge";
 
 // Barres de forme d'onde déterministes, colorées comme dans l'app (graves, médiums, aigus).
 const BARS = Array.from({ length: 72 }, (_, i) => {
@@ -14,9 +14,9 @@ const BARS = Array.from({ length: 72 }, (_, i) => {
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const postTitle = searchParams.get("title") || siteConfig.tagline;
-  const fontData = await fetch(
-    new URL("../../assets/fonts/Inter-SemiBold.ttf", import.meta.url)
-  ).then((res) => res.arrayBuffer());
+  const fontData = await readFile(
+    join(process.cwd(), "src/assets/fonts/Inter-SemiBold.ttf")
+  );
 
   return new ImageResponse(
     (
