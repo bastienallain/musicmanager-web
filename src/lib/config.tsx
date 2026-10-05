@@ -43,8 +43,11 @@ export const palette = {
   high: "#3E8BFF",
 } as const;
 
+// Nom du produit : seule source, reprise partout dans les textes.
+const APP_NAME = "Devosound";
+
 export const siteConfig = {
-  name: "MusicManager",
+  name: APP_NAME,
   tagline: "Your music, exactly as it was recorded.",
   description:
     "The music library for DJs and audiophiles on Mac: bit-perfect sound, a clean collection and a DJ mixer, in one app.",
@@ -89,7 +92,7 @@ export const siteConfig = {
     secondaryCta: { href: "#features", label: "See the features" },
     image: "/screens/library-playing.png",
     imageAlt:
-      "MusicManager library view with the color waveform player and VU meter",
+      `${APP_NAME} library view with the color waveform player and VU meter`,
     status: { mode: "Bit-perfect", detail: "FLAC 24/192 → USB DAC" },
   },
   // Section « chaîne du signal » : un mode par état affiché dans l'en-tête de l'app.
@@ -97,8 +100,8 @@ export const siteConfig = {
     eyebrow: "Signal path",
     title: "Nothing between the file and your DAC.",
     description:
-      "MusicManager shows what actually reaches your speakers. When the chain is clean, it says so. When it isn't, it tells you why.",
-    stages: { source: "File", engine: "MusicManager", output: "Output" },
+      `${APP_NAME} shows what actually reaches your speakers. When the chain is clean, it says so. When it isn't, it tells you why.`,
+    stages: { source: "File", engine: APP_NAME, output: "Output" },
     modes: [
       {
         id: "bit-perfect",
@@ -339,8 +342,8 @@ export const siteConfig = {
         "BPM, beat grid and Camelot key analyzed automatically. Tags completed from MusicBrainz and Discogs, keeping only the artist's official album, never a random compilation. High-resolution artwork.",
       imageSrc: "/screens/bpm.png",
       imageAlt: "BPM analysis view with tempo and Camelot key for each track",
-      imageWidth: 1920,
-      imageHeight: 1200,
+      imageWidth: 2560,
+      imageHeight: 1720,
       direction: "rtl" as const,
       // Carte « avant / après » animée : tags d'un nom de fichier → tags MusicBrainz.
       tagFix: {

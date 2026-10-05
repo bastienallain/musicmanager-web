@@ -1,6 +1,6 @@
-# MusicManager — website
+# Devosound — website
 
-Landing page for **MusicManager**, a music library app for DJs and audiophiles: bit-perfect playback, DSD, DLNA / OpenHome streaming and a two-deck DJ mixer in one app. macOS (Apple Silicon) first, Windows and Linux coming soon.
+Landing page for **Devosound**, a music library app for DJs and audiophiles: bit-perfect playback, DSD, DLNA / OpenHome streaming and a two-deck DJ mixer in one app. macOS (Apple Silicon) first, Windows and Linux coming soon.
 
 This is a first draft. The app is not released yet, prices shown on the page are indicative, and the waitlist form is not connected.
 

@@ -124,8 +124,8 @@ export function Features() {
                   <Image
                     src={image}
                     alt={`${title} view`}
-                    width={1732}
-                    height={853}
+                    width={2560}
+                    height={1720}
                     sizes="380px"
                     className="block h-auto w-full"
                   />

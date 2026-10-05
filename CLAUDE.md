@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Contexte
 
-Site vitrine (landing page one-page) de **MusicManager**, app Mac de bibliothèque musicale pour DJ et audiophiles : lecture bit-perfect, DSD, streaming DLNA/OpenHome, DJ Mixer. Le code part du template Magic UI « mobile » (nom npm `mobile-magicui`, contenu factice « Cal AI ») qu'on adapte à l'app.
+Site vitrine (landing page one-page) de **Devosound** (ex-MusicManager), app Mac de bibliothèque musicale pour DJ et audiophiles : lecture bit-perfect, DSD, streaming DLNA/OpenHome, DJ Mixer. Le code part du template Magic UI « mobile » (nom npm `mobile-magicui`, contenu factice « Cal AI ») qu'on adapte à l'app.
 
 **Source de vérité du contenu : `CONTENU-SITE.md`** (à la racine de ce dépôt). Il donne le texte de chaque section, l'inventaire des fonctionnalités, la FAQ, la palette et la liste de ce qu'il ne faut pas promettre. Le lire avant toute modification de contenu. Les captures `../Screenshot *.png` montrent l'interface réelle de l'app (thème sombre, accent cyan) ; s'en servir comme référence visuelle.
 
-L'app elle-même vit dans un autre dépôt : `~/Github/MusicManager` (branche `dev-v2`). Ses captures sont dans `docs/captures/`, et `uv run python scripts/apercu_ui.py --sortie captures_site` les régénère.
+L'app elle-même vit dans un autre dépôt : `~/Github/MusicManager` (branche `dev` ; le dépôt et le paquet Python gardent le nom MusicManager). Ses captures sont dans `docs/captures/`, et `QT_SCALE_FACTOR=2 uv run python scripts/apercu_ui.py --sortie <dossier>` les régénère en 2× (Qt offscreen, base de démo isolée ; l'interface de l'app est en français).
 
 ## Commandes
 
@@ -27,7 +27,7 @@ Il n'y a pas de tests. Flow Git : branche `dev`, branches `feature/…` / `fix/�
 ## Architecture
 
 - **Next.js 16 App Router, React 19, Tailwind CSS v4, shadcn/ui (style new-york), framer-motion.** Alias `@/*` → `src/*`.
-- **Tout le contenu est dans `src/lib/config.tsx`** (`siteConfig` : `name`, `description`, `keywords`, `links`, `features`, `featureHighlight`, `bento`, `benefits`, `pricing`, `faqs`, `footer`, `testimonials`). Les sections lisent cet objet ; on change le texte dans la config, pas dans les composants. `siteConfig.name` doit rester la seule source du nom de l'app. Le nom n'existe pas encore : « MusicManager » est le nom de travail, « musica. » un logotype de remplissage des maquettes, et ni l'un ni l'autre n'est une option. Le nom définitif sera créé par le marketing.
+- **Tout le contenu est dans `src/lib/config.tsx`** (`siteConfig` : `name`, `description`, `keywords`, `links`, `features`, `featureHighlight`, `bento`, `benefits`, `pricing`, `faqs`, `footer`, `testimonials`). Les sections lisent cet objet ; on change le texte dans la config, pas dans les composants. `siteConfig.name` (constante `APP_NAME`, « Devosound ») reste la seule source du nom de l'app.
 - **`src/app/page.tsx`** assemble les sections de `src/components/sections/` dans l'ordre. Pour masquer une section, on la retire d'ici.
 - **`src/components/section.tsx`** est le wrapper commun : titre, sous-titre et description avec un fondu au scroll. L'`id` d'ancre est dérivé du `title` (minuscules, tirets) s'il n'est pas passé, et les liens du header pointent dessus.
 - **Métadonnées et SEO** : `constructMetadata()` dans `src/lib/utils.ts` construit le `Metadata` à partir de `siteConfig`. L'image OG est générée en edge par `src/app/og/route.tsx` (police `src/assets/fonts/Inter-SemiBold.ttf`, fond `public/og.png`). `src/app/sitemap.ts` utilise `NEXT_PUBLIC_APP_URL` (voir `.env.example`).

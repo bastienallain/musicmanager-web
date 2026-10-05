@@ -1,4 +1,4 @@
-# Contenu du site MusicManager
+# Contenu du site Devosound
 
 Ce document décrit le contenu de la page d'accueil, section par section, avec toutes les fonctionnalités de l'app. C'est la source de vérité du contenu du site : le texte vit dans `src/lib/config.tsx` et les sections dans `src/components/sections/`.
 
@@ -12,7 +12,7 @@ Ce document décrit le contenu de la page d'accueil, section par section, avec t
 
 | Point | Où en est-on | En attendant |
 | --- | --- | --- |
-| **Nom de l'app** | Le nom n'existe pas encore : il sera créé par le marketing, en partant d'une page blanche. « MusicManager » est seulement le nom de travail, et « musica. » un logotype de remplissage des maquettes : ni l'un ni l'autre n'est une option. | Garder « MusicManager » dans `siteConfig.name`, seule source du nom, pour pouvoir le remplacer partout d'un coup. |
+| **Nom de l'app** | **Devosound** (décision du 5 octobre 2026). Le dépôt et le paquet Python de l'app gardent le nom `MusicManager`. | `siteConfig.name` reste la seule source du nom sur le site. |
 | **Plateformes** | macOS (Apple Silicon) au lancement. Windows et Linux sont annoncés « coming soon ». | Pas de date ni de fonctionnalité promise pour Windows et Linux (`siteConfig.platforms`). |
 | **Section Tarifs** (`pricing`) | Affichée à la demande de Bastien, avec des montants **indicatifs**. | Marquer clairement les montants comme provisoires ; ils restent à valider. |
 | **Témoignages** (`testimonials`) | Le modèle contient de faux avis. | Les supprimer. Aucun témoignage inventé : on garde seulement de vraies citations, avec l'accord de leur auteur. |
