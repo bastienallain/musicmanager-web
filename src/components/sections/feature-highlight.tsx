@@ -4,105 +4,177 @@ import { MacWindow } from "@/components/mac-window";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
-import { ArrowRightIcon, CheckIcon } from "lucide-react";
+import { ArrowRightIcon, CheckIcon, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 type Highlight = (typeof siteConfig.featureHighlight)[number];
-type Spec = { label: string; value: string; unit: string };
+type OutputMode = NonNullable<Highlight["modes"]>[number];
 type Stat = { value: string; label: string };
 type TagFix = NonNullable<Highlight["tagFix"]>;
 
 const LED_COLOR = [
-  "bg-deck-a shadow-[0_0_8px_#4A8DFF]",
+  "bg-readout shadow-[0_0_8px_#30D26A]",
   "bg-[#E8B04A] shadow-[0_0_8px_#E8B04A]",
   "bg-deck-b shadow-[0_0_8px_#D08B6C]",
 ];
 const SCREWS = ["left-2 top-2", "right-2 top-2", "left-2 bottom-2", "right-2 bottom-2"];
 const DB_TICKS = [0, -20, -40, -60, -80, -100, -120, -140, -160];
-const dbX = (db: number) => Math.round((8 + (-db / 160) * 284) * 10) / 10;
-const NOISE_X = dbX(-141);
+// Marges de 14 unités : les libellés « 0 » et « −160 » tiennent dans le viewBox.
+const dbX = (db: number) => Math.round((14 + (-db / 160) * 272) * 10) / 10;
 
-// Échelle en dB du panneau hi-fi : 0 à −160 dB, repère sur le bruit du rééchantillonneur.
-// Entièrement statique : rendue une seule fois au chargement du module.
-const NOISE_FLOOR_SCALE = (
-  <svg viewBox="0 0 300 46" className="w-full" role="img" aria-label="Resampler noise at −141 dB on a 0 to −160 dB scale">
-    <rect x="8" y="10" width="284" height="6" rx="3" fill="#24282C" />
-    <defs>
-      <linearGradient id="nf-fill" x1="0" x2="1">
-        <stop offset="0" stopColor="#4A8DFF" stopOpacity="0.9" />
-        <stop offset="1" stopColor="#4A8DFF" stopOpacity="0.15" />
-      </linearGradient>
-    </defs>
-    <rect x="8" y="10" width={NOISE_X - 8} height="6" rx="3" fill="url(#nf-fill)" />
-    <line x1={NOISE_X} x2={NOISE_X} y1="4" y2="22" stroke="#4A8DFF" strokeWidth="1.5" />
-    {DB_TICKS.map((t) => (
-      <g key={t}>
-        <line x1={dbX(t)} x2={dbX(t)} y1="20" y2={t % 40 === 0 ? 27 : 24} stroke="#8A94A0" strokeOpacity="0.5" />
-        {t % 40 === 0 && (
-          <text x={dbX(t)} y="40" textAnchor="middle" fontSize="8" fill="#8A94A0" className="font-mono">
-            {t === 0 ? "0" : `−${-t}`}
-          </text>
-        )}
-      </g>
-    ))}
-  </svg>
-);
+// Graduations de l'échelle en dB, statiques : rendues une seule fois au chargement du module.
+const DB_GRADUATIONS = DB_TICKS.map((t) => (
+  <g key={t}>
+    <line x1={dbX(t)} x2={dbX(t)} y1="20" y2={t % 40 === 0 ? 27 : 24} stroke="#8A94A0" strokeOpacity="0.5" />
+    {t % 40 === 0 && (
+      <text x={dbX(t)} y="40" textAnchor="middle" fontSize="8" fill="#8A94A0" className="font-mono">
+        {t === 0 ? "0" : `−${-t}`}
+      </text>
+    )}
+  </g>
+));
 
-// Façade de DAC : témoins de mode et specs en chiffres.
-function SpecPanel({ specs, modes }: { specs: Spec[]; modes: string[] }) {
+// Échelle 0 à −160 dB : le repère glisse sur le bruit ajouté par le mode, ou s'efface.
+function NoiseScale({ noise, note, instant }: { noise: number | null; note: string; instant: boolean }) {
+  const x = noise === null ? dbX(0) : dbX(noise);
+  const transition = instant ? { duration: 0 } : { duration: 0.6, ease: "easeInOut" as const };
+  return (
+    <figure className="mt-4">
+      <svg viewBox="0 0 300 46" className="w-full" aria-hidden>
+        <defs>
+          <linearGradient id="nf-fill" x1="0" x2="1">
+            <stop offset="0" stopColor="#4A8DFF" stopOpacity="0.9" />
+            <stop offset="1" stopColor="#4A8DFF" stopOpacity="0.15" />
+          </linearGradient>
+        </defs>
+        <rect x="14" y="10" width="272" height="6" rx="3" fill="#24282C" />
+        <motion.rect
+          x="14"
+          y="10"
+          height="6"
+          rx="3"
+          fill="url(#nf-fill)"
+          initial={false}
+          animate={{ width: x - 14, opacity: noise === null ? 0 : 1 }}
+          transition={transition}
+        />
+        <motion.line
+          y1="4"
+          y2="22"
+          stroke="#4A8DFF"
+          strokeWidth="1.5"
+          initial={false}
+          animate={{ x1: x, x2: x, opacity: noise === null ? 0 : 1 }}
+          transition={transition}
+        />
+        {DB_GRADUATIONS}
+      </svg>
+      <figcaption className="mt-1 font-mono text-[11px] text-muted-foreground">{note}</figcaption>
+    </figure>
+  );
+}
+
+// Façade de DAC : un témoin par mode ; chaque mode a ses réponses oui / non et ses chiffres.
+function SpecPanel({ modes, facts }: { modes: OutputMode[]; facts: string[] }) {
   const reduceMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref);
   const [mode, setMode] = useState(0);
+  const [auto, setAuto] = useState(true);
+  const current = modes[mode];
 
-  // Cycle des témoins, suspendu hors écran.
+  // Cycle des modes, suspendu hors écran et dès que l'utilisateur en a choisi un.
   useEffect(() => {
-    if (reduceMotion || !inView) return;
-    const id = setInterval(() => setMode((m) => (m + 1) % modes.length), 2800);
+    if (reduceMotion || !auto || !inView) return;
+    const id = setInterval(() => setMode((m) => (m + 1) % modes.length), 3400);
     return () => clearInterval(id);
-  }, [modes.length, reduceMotion, inView]);
+  }, [modes.length, reduceMotion, auto, inView]);
+
+  const choose = (i: number) => {
+    setAuto(false);
+    setMode(i);
+  };
 
   return (
     <div ref={ref} className="relative mt-8 rounded-xl border border-white/10 bg-gradient-to-b from-raised to-surface p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-      {/* vis de façade */}
       {SCREWS.map((p) => (
         <span key={p} aria-hidden className={cn("absolute size-1.5 rounded-full bg-white/10", p)} />
       ))}
 
-      <ul className="flex flex-wrap gap-x-4 gap-y-2" aria-label="Output modes shown by the app">
+      <div role="group" aria-label="Output mode shown by the app" className="flex flex-wrap gap-x-1 gap-y-1">
         {modes.map((m, i) => (
-          <li key={m} className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
+          <button
+            key={m.label}
+            type="button"
+            onClick={() => choose(i)}
+            aria-pressed={i === mode}
+            className="flex min-h-8 items-center gap-2 rounded-md px-2 font-mono text-[11px] uppercase tracking-wider transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             <span
               aria-hidden
               className={cn(
                 "size-1.5 rounded-full transition-all duration-500",
-                i === mode
-                  ? LED_COLOR[i % LED_COLOR.length]
-                  : "bg-white/15"
+                i === mode ? LED_COLOR[i % LED_COLOR.length] : "bg-white/15"
               )}
             />
             <span className={cn("transition-colors duration-500", i === mode ? "text-foreground" : "text-muted-foreground")}>
-              {m}
+              {m.label}
             </span>
-          </li>
+          </button>
         ))}
-      </ul>
+      </div>
 
-      <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-white/5">
-        {specs.map((s) => (
-          <div key={s.label} className="bg-surface/90 p-3">
-            <dt className="text-[11px] leading-tight text-muted-foreground">{s.label}</dt>
-            <dd className="mt-1.5 font-mono tabular-nums">
-              <span className="text-lg text-foreground sm:text-xl">{s.value}</span>{" "}
-              <span className="text-[11px] text-deck-a">{s.unit}</span>
+      <dl
+        className="mt-4 grid grid-cols-1 gap-px overflow-hidden rounded-lg bg-white/5 sm:grid-cols-2"
+        aria-live={auto ? "off" : "polite"}
+      >
+        {current.checks.map((c, i) => (
+          <div key={c.label} className="bg-surface/90 p-3">
+            <dt className="flex items-center justify-between gap-2 text-[11px] leading-tight text-muted-foreground">
+              {c.label}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={`${mode}-${c.ok}`}
+                  initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2, delay: reduceMotion ? 0 : i * 0.05 }}
+                  className={cn(
+                    "inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider",
+                    c.ok ? "bg-readout/15 text-readout" : "bg-deck-b/15 text-deck-b"
+                  )}
+                >
+                  {c.ok ? <CheckIcon className="size-3" aria-hidden /> : <XIcon className="size-3" aria-hidden />}
+                  {c.ok ? "Yes" : "No"}
+                </motion.span>
+              </AnimatePresence>
+            </dt>
+            <dd className="mt-1.5 min-h-7 font-mono tabular-nums">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={`${mode}-${c.value}`}
+                  initial={reduceMotion ? false : { opacity: 0, y: 6, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -6, filter: "blur(4px)" }}
+                  transition={{ duration: 0.25, delay: reduceMotion ? 0 : i * 0.05 }}
+                  className="flex flex-wrap items-baseline gap-x-2"
+                >
+                  <span className="whitespace-nowrap text-lg text-foreground">{c.value}</span>
+                  <span className="text-[11px] text-deck-a">{c.unit}</span>
+                </motion.span>
+              </AnimatePresence>
             </dd>
           </div>
         ))}
       </dl>
 
-      <div className="mt-4">
-        {NOISE_FLOOR_SCALE}
-      </div>
+      <NoiseScale noise={current.noise} note={current.scaleNote} instant={!!reduceMotion} />
+
+      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1 border-t border-white/5 pt-3 font-mono text-[11px] text-muted-foreground">
+        {facts.map((f) => (
+          <li key={f}>{f}</li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -267,8 +339,8 @@ function HighlightRow({ feature }: { feature: Highlight }) {
           <p className="mt-5 text-pretty text-lg leading-8 text-muted-foreground">
             {feature.description}
           </p>
-          {feature.specs && feature.modes && (
-            <SpecPanel specs={feature.specs} modes={feature.modes} />
+          {feature.modes && feature.facts && (
+            <SpecPanel modes={feature.modes} facts={feature.facts} />
           )}
           {feature.stats && <DeckStats stats={feature.stats} />}
           {feature.tagFix && <TagFixCard tagFix={feature.tagFix} />}

@@ -65,7 +65,7 @@ Liens : Fonctionnalités · Hi-fi · DJ · Tarifs · Questions · bouton « Me p
 
 1. **Bit-perfect, vérifié.**
    « L'app règle votre carte son sur la fréquence de chaque morceau et lui envoie les échantillons tels quels, sans conversion ni volume logiciel. Le mode est affiché en permanence : Bit-perfect, Rééchantillonné 192 → 96 kHz, ou Bluetooth (son compressé). Rien n'est caché. »
-   Panneau de chiffres : fichiers lus de 16/44,1 à 32/768, bruit du rééchantillonnage de secours à −141 dB, 24 bits effectifs en sortie entière sur macOS, 10 types de liaison de sortie reconnus (Mac, USB, HDMI, DisplayPort, Bluetooth, AirPlay, Thunderbolt, FireWire, PCI, AVB).
+   Panneau « façade de DAC » : trois témoins cliquables (Bit-perfect, Rééchantillonné 192 → 96 kHz, Bluetooth compressé) qui défilent seuls. Pour chaque mode, les mêmes quatre questions avec un oui / non et le chiffre qui change : fréquence d'origine (24/96 → 24/96 ; 24/192 → 24/96 ; fixée par le codec), échantillons intacts (tels quels ; calcul 64 bits avec dither ; réencodés), aucun bruit ajouté (aucun ; −141 dB, repère sur l'échelle en dB ; codec non mesuré), liaison sans perte (USB en mode exclusif ; USB, DAC limité à 96 kHz ; Bluetooth compressé). En pied de panneau, les faits généraux : fichiers de 16/44,1 à 32/768, 24 bits effectifs sur macOS, 10 types de liaison de sortie reconnus.
 
 2. **Une vraie table de mixage.**
    « Deux platines avec SYNC du tempo et de la phase, keylock, 8 hot cues, boucles de 1 à 16 temps calées sur la grille, égaliseur 3 bandes avec KILL, et pré-écoute au casque sur une seconde sortie. Chargé depuis la bibliothèque avec A ou B, un morceau attend en pause. Un clic sur la clé d'une platine ouvre le sélecteur de l'autre, filtré sur les clés compatibles. »

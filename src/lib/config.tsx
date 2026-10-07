@@ -311,14 +311,49 @@ export const siteConfig = {
       imageWidth: 2560,
       imageHeight: 1720,
       direction: "rtl" as const,
-      // Panneau de specs dessiné en SVG à côté de la capture.
-      specs: [
-        { label: "Files played", value: "16/44.1 → 32/768", unit: "bit / kHz" },
-        { label: "Fallback resampler noise", value: "−141", unit: "dB" },
-        { label: "Integer output on macOS", value: "24", unit: "effective bits" },
-        { label: "Output links detected", value: "10", unit: "USB, HDMI, AirPlay…" },
+      // Façade de DAC : un témoin par mode, et pour chacun les mêmes quatre questions
+      // avec leur réponse (oui / non) et le détail qui change. `noise` place le repère
+      // sur l'échelle en dB (null : pas de repère, `scaleNote` explique pourquoi).
+      modes: [
+        {
+          label: "Bit-perfect",
+          checks: [
+            { label: "Original sample rate", ok: true, value: "24/96 → 24/96", unit: "bit / kHz" },
+            { label: "Samples untouched", ok: true, value: "As is", unit: "integers" },
+            { label: "No added noise", ok: true, value: "None", unit: "no conversion" },
+            { label: "Lossless link", ok: true, value: "USB", unit: "exclusive mode" },
+          ],
+          noise: null,
+          scaleNote: "No conversion: nothing added to the signal",
+        },
+        {
+          label: "Resampled 192 → 96 kHz",
+          checks: [
+            { label: "Original sample rate", ok: false, value: "24/192 → 24/96", unit: "bit / kHz" },
+            { label: "Samples untouched", ok: false, value: "64-bit", unit: "with dither" },
+            { label: "No added noise", ok: false, value: "−141", unit: "dB" },
+            { label: "Lossless link", ok: true, value: "USB", unit: "DAC max 96 kHz" },
+          ],
+          noise: -141,
+          scaleNote: "Fallback resampler noise, measured at −141 dB",
+        },
+        {
+          label: "Bluetooth (compressed)",
+          checks: [
+            { label: "Original sample rate", ok: false, value: "Codec", unit: "rate set by Bluetooth" },
+            { label: "Samples untouched", ok: false, value: "Re-encoded", unit: "lossy" },
+            { label: "No added noise", ok: false, value: "Codec", unit: "not measured" },
+            { label: "Lossless link", ok: false, value: "Bluetooth", unit: "compressed" },
+          ],
+          noise: null,
+          scaleNote: "Compressed by Bluetooth: the app says so in the header",
+        },
       ],
-      modes: ["Bit-perfect", "Resampled 192 → 96 kHz", "Bluetooth (compressed)"],
+      facts: [
+        "Files from 16/44.1 to 32/768",
+        "24 effective bits on macOS",
+        "10 output links detected",
+      ],
     },
     {
       id: "dj",
