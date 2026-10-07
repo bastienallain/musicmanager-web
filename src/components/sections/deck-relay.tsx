@@ -206,7 +206,7 @@ export function DeckRelay() {
               const visible = (i === 1) === mix;
               return (
                 <motion.div
-                  key={shot.image}
+                  key={shot.label}
                   className="absolute inset-0"
                   initial={false}
                   animate={{
@@ -219,8 +219,8 @@ export function DeckRelay() {
                   <Image
                     src={shot.image}
                     alt={shot.imageAlt}
-                    width={shot.width}
-                    height={shot.height}
+                    quality={85}
+                    placeholder="blur"
                     sizes="(min-width: 1024px) 1024px, 100vw"
                     className="h-full w-full object-cover object-top"
                   />

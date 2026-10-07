@@ -1,3 +1,21 @@
+import bpm from "@/assets/screens/bpm.webp";
+import cast from "@/assets/screens/cast.webp";
+import covers from "@/assets/screens/covers.webp";
+import djMixer from "@/assets/screens/dj-mixer.webp";
+import djMixerRelay from "@/assets/screens/dj-mixer-relay.webp";
+import favorites from "@/assets/screens/favorites.webp";
+import history from "@/assets/screens/history.webp";
+import libraryPlaying from "@/assets/screens/library-playing.webp";
+import player from "@/assets/screens/player.webp";
+import smartPlaylist from "@/assets/screens/smart-playlist.webp";
+import stats from "@/assets/screens/stats.webp";
+import styles from "@/assets/screens/styles.webp";
+import waveformColor from "@/assets/screens/waveform-color.webp";
+import benefitHifi from "@/assets/screens/benefit-hifi.webp";
+import benefitRelay from "@/assets/screens/benefit-relay.webp";
+import benefitSearch from "@/assets/screens/benefit-search.webp";
+import harmonicWheel from "@/assets/screens/harmonic-wheel.webp";
+import type { StaticImageData } from "next/image";
 import {
   AudioWaveformIcon,
   CastIcon,
@@ -93,7 +111,7 @@ export const siteConfig = {
     subtitle:
       "Library, bit-perfect playback and a two-deck DJ mixer in one app, built for the Mac first. From 16-bit FLAC to 24-bit / 384 kHz, sent to your DAC untouched.",
     secondaryCta: { href: "#features", label: "See the features" },
-    image: "/screens/library-playing.png",
+    image: libraryPlaying,
     imageAlt:
       `${APP_NAME} library view with the cover gallery, the track list and the player bar`,
     status: { mode: "Bit-perfect", detail: "FLAC 24/192 → USB DAC" },
@@ -174,28 +192,22 @@ export const siteConfig = {
       title: "Library",
       description:
         "A cover gallery above the track list, BPM and Camelot key on every row, and an Up Next queue you reorder by dragging.",
-      image: "/screens/library-playing.png",
+      image: libraryPlaying,
       imageAlt: "Library view with the cover gallery, the track list, BPM, key and deck A / B buttons",
-      width: 2560,
-      height: 1720,
     },
     {
       title: "Player",
       description:
         "BPM and key in green readouts, a mini-waveform as the progress bar, shuffle and repeat, and the actual output quality always in the header.",
-      image: "/screens/player.png",
+      image: player,
       imageAlt: "Player bar with artwork, shuffle and repeat, transport controls and the mini waveform",
-      width: 2560,
-      height: 1720,
     },
     {
       title: "DJ Mixer",
       description:
         "Two decks, a center mixer and color waveforms with beat grid, hot cues and loops, zoomable from ×1 to ×8.",
-      image: "/screens/dj-mixer.png",
+      image: djMixer,
       imageAlt: "DJ Mixer with two loaded decks and stacked color waveforms",
-      width: 2560,
-      height: 1720,
     },
   ],
   // Section #relay : passer de l'écoute au mix sans couper le son.
@@ -207,17 +219,13 @@ export const siteConfig = {
     toggle: { listen: "Listen", mix: "Mix" },
     listen: {
       label: "Library",
-      image: "/screens/library-playing.png",
+      image: libraryPlaying,
       imageAlt: "Library view with Nuit Blanche by Motorbass in the player",
-      width: 2560,
-      height: 1720,
     },
     mix: {
       label: "DJ Mixer",
-      image: "/screens/dj-mixer-relay.png",
+      image: djMixerRelay,
       imageAlt: "DJ Mixer with Nuit Blanche continuing on deck A",
-      width: 2560,
-      height: 1720,
     },
     nowPlaying: { title: "Nuit Blanche", artist: "Motorbass", bpm: "124.0" },
     note: "Same track, same position. No reload, no silence.",
@@ -292,12 +300,12 @@ export const siteConfig = {
   moreFeaturesLabel: "Everything else",
   moreViewsLabel: "More views",
   moreViews: [
-    { title: "Statistics", image: "/screens/stats.png" },
-    { title: "Smart Playlists", image: "/screens/smart-playlist.png" },
-    { title: "Artwork", image: "/screens/covers.png" },
-    { title: "History", image: "/screens/history.png" },
-    { title: "Musical styles", image: "/screens/styles.png" },
-    { title: "Favorites", image: "/screens/favorites.png" },
+    { title: "Statistics", image: stats },
+    { title: "Smart Playlists", image: smartPlaylist },
+    { title: "Artwork", image: covers },
+    { title: "History", image: history },
+    { title: "Musical styles", image: styles },
+    { title: "Favorites", image: favorites },
   ],
   featureHighlight: [
     {
@@ -306,10 +314,8 @@ export const siteConfig = {
       title: "Bit-perfect, and verified.",
       description:
         "The app sets your sound card to each track's sample rate and sends the samples as they are: no conversion, no software volume. The mode is always shown: Bit-perfect, Resampled 192 → 96 kHz, or Bluetooth (compressed). Nothing is hidden.",
-      imageSrc: "/screens/player.png",
+      imageSrc: player,
       imageAlt: "Library with the player bar, the output menu and the track in progress",
-      imageWidth: 2560,
-      imageHeight: 1720,
       direction: "rtl" as const,
       // Façade de DAC : un témoin par mode, et pour chacun les mêmes quatre questions
       // avec leur réponse (oui / non) et le détail qui change. `noise` place le repère
@@ -361,10 +367,8 @@ export const siteConfig = {
       title: "A real mixer.",
       description:
         "Two decks with tempo and phase SYNC, keylock, 8 hot cues, 1 to 16-beat loops locked to the grid, a 3-band EQ with KILL, and headphone cueing on a second output. Load a track on A or B from the library and it waits, paused. Click a deck's key and the other deck's track picker shows only compatible keys.",
-      imageSrc: "/screens/dj-mixer.png",
+      imageSrc: djMixer,
       imageAlt: "DJ Mixer with two decks and stacked color waveforms",
-      imageWidth: 2560,
-      imageHeight: 1720,
       direction: "ltr" as const,
       stats: [
         { value: "8", label: "hot cues per deck" },
@@ -379,10 +383,8 @@ export const siteConfig = {
       title: "A collection that stays clean.",
       description:
         "BPM and beat grid analyzed in the background, Camelot keys in one batch. Empty tags filled from MusicBrainz and Discogs, keeping only the artist's official album, never a random compilation. Artwork up to 1200 px.",
-      imageSrc: "/screens/bpm.png",
+      imageSrc: bpm,
       imageAlt: "BPM analysis view with tempo and Camelot key for each track",
-      imageWidth: 2560,
-      imageHeight: 1720,
       direction: "rtl" as const,
       // Carte « avant / après » animée : tags d'un nom de fichier → tags MusicBrainz.
       tagFix: {
@@ -420,7 +422,7 @@ export const siteConfig = {
       title: "Color waveform",
       content:
         "Lows in red, mids in green, highs in blue: read a track's structure at a glance. Serato or VirtualDJ style, your choice in Settings.",
-      imageSrc: "/screens/waveform-color.png",
+      imageSrc: waveformColor,
       imageAlt:
         "Color waveforms of two decks: full-track overviews above, zoomed views below",
       fullWidth: true,
@@ -431,7 +433,7 @@ export const siteConfig = {
       title: "Hi-fi streaming over DLNA / OpenHome",
       content:
         "The file reaches your streamer untouched, up to 24/384, gapless when the streamer supports it.",
-      imageSrc: "/screens/cast.png",
+      imageSrc: cast,
       imageAlt:
         "Play on a network streamer dialog showing Bit-perfect, 24-bit / 192 kHz, FLAC",
       fullWidth: false,
@@ -442,8 +444,6 @@ export const siteConfig = {
       title: "DSD, in the engine",
       content:
         "The audio engine plays DSF and DFF: DoP to compatible DACs, PCM conversion for the rest. DSD files can't be added to the library yet.",
-      imageSrc: "/screens/vu-meter.png",
-      imageAlt: "VU meter states",
       fullWidth: false,
       chips: ["DSF", "DFF", "DoP v1.1", "DSD64–256"],
       note: "PCM conversion keeps in-band noise at −123 dB.",
@@ -452,7 +452,7 @@ export const siteConfig = {
       title: "Harmonic mixing",
       content:
         "The Camelot wheel suggests the tracks that fit the one you're playing.",
-      imageSrc: "/screens/harmonic-mix.png",
+      imageSrc: harmonicWheel,
       imageAlt: "Harmonic Mix view with the Camelot wheel",
       fullWidth: true,
       chips: [],
@@ -469,37 +469,29 @@ export const siteConfig = {
       text: "Hear your hi-res files the way they were mastered.",
       detail:
         "The sound card follows each track's sample rate, and the header shows what you actually hear.",
-      image: "/screens/player.png",
-      // Zone affichée dans la capture, en pixels source : [x, y, largeur].
-      size: [2560, 1720],
-      crop: [560, 1208, 960],
+      // Recadrage WebP de la capture « player » (zone de la barre de lecture).
+      image: benefitHifi,
     },
     {
       id: 2,
       text: "Go from listening to mixing without stopping the music.",
       detail:
         "The track carries on on deck A or B, at the same position. It works the other way too.",
-      image: "/screens/dj-mixer-relay.png",
-      size: [2560, 1720],
-      crop: [0, 154, 1500],
+      image: benefitRelay,
     },
     {
       id: 3,
       text: "Find any track among 50,000 in an instant.",
       detail:
         "The library opens in about 100 ms. Search with ⌘K, filter by genre, format, key and BPM range.",
-      image: "/screens/library-idle.png",
-      size: [2560, 1720],
-      crop: [480, 160, 1700],
+      image: benefitSearch,
     },
     {
       id: 4,
       text: "Keep your cues and notes when you rename a file.",
       detail:
         "Renamed or moved files keep their favorites, ratings, BPM, hot cues, playlists and history.",
-      image: "",
-      size: [0, 0],
-      crop: [0, 0, 0],
+      image: null,
       rename: {
         from: "~/Music/Incoming/track07.flac",
         to: "~/Music/House/Marcel & Jules - Soleil Tardif.flac",

@@ -1,15 +1,15 @@
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 
 interface MacWindowProps {
-  src: string;
+  // Import statique : largeur, hauteur et aperçu flou fournis par le build.
+  src: StaticImageData;
   alt: string;
-  width: number;
-  height: number;
+  // Largeur réelle d'affichage, obligatoire : chaque section donne la sienne.
+  sizes: string;
   className?: string;
   // Réservé à l'image LCP (hero) : précharge au lieu du chargement différé.
   preload?: boolean;
-  sizes?: string;
   // Lueur colorée derrière la fenêtre (deck A par défaut).
   glow?: "a" | "b" | "none";
   // Les captures de l'app ont déjà leurs feux tricolores : pas de barre ajoutée.
@@ -19,11 +19,9 @@ interface MacWindowProps {
 export function MacWindow({
   src,
   alt,
-  width,
-  height,
+  sizes,
   className,
   preload,
-  sizes = "(min-width: 1280px) 1200px, 100vw",
   glow = "a",
   chrome = false,
 }: MacWindowProps) {
@@ -52,12 +50,13 @@ export function MacWindow({
         <Image
           src={src}
           alt={alt}
-          width={width}
-          height={height}
-          preload={preload}
-          loading={preload ? "eager" : undefined}
-          fetchPriority={preload ? "high" : undefined}
           sizes={sizes}
+          quality={85}
+          // Pas de flou sur l'image LCP : elle doit être peinte nette tout de suite.
+          placeholder={preload ? "empty" : "blur"}
+          preload={preload}
+          loading={preload ? "eager" : "lazy"}
+          fetchPriority={preload ? "high" : "auto"}
           className="block h-auto w-full"
         />
       </div>

@@ -278,14 +278,16 @@ function WaveformCard({ item }: { item: BentoItem }) {
 
       <figure className="space-y-2 md:col-span-2">
         <div className="overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
-          <Image
-            src={item.imageSrc}
-            alt={item.imageAlt}
-            width={2560}
-            height={450}
-            sizes="(min-width: 1024px) 920px, 100vw"
-            className="block h-auto w-full"
-          />
+          {item.imageSrc && (
+            <Image
+              src={item.imageSrc}
+              alt={item.imageAlt ?? ""}
+              quality={85}
+              placeholder="blur"
+              sizes="(min-width: 1024px) 920px, calc(100vw - 4rem)"
+              className="block h-auto w-full"
+            />
+          )}
         </div>
         <figcaption>
           <Note>{item.note}</Note>
@@ -383,14 +385,18 @@ function StreamingCard({ item }: { item: BentoItem }) {
       <Chips chips={item.chips} />
       <figure className="mt-auto space-y-2">
         <div className="relative h-32 overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
-          <Image
-            src={item.imageSrc}
-            alt={item.imageAlt}
-            fill
-            sizes="(min-width: 1024px) 430px, (min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-            style={{ objectPosition: "0% 90%" }}
-          />
+          {item.imageSrc && (
+            <Image
+              src={item.imageSrc}
+              alt={item.imageAlt ?? ""}
+              fill
+              quality={85}
+              placeholder="blur"
+              sizes="(min-width: 1024px) 430px, (min-width: 768px) 50vw, 100vw"
+              className="object-cover"
+              style={{ objectPosition: "0% 90%" }}
+            />
+          )}
         </div>
         <figcaption>
           <Note>{item.note}</Note>
@@ -681,16 +687,18 @@ function HarmonicCard({ item }: { item: BentoItem }) {
           </ul>
         </div>
         <Note>{item.note}</Note>
-        {/* Roue de l'app recadrée dans la capture 2560×1720 (zone x 470–1230, y 660–1230). */}
+        {/* Roue de l'app, recadrée en WebP dans la capture Harmonic Mix. */}
         <div className="overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
-          <Image
-            src="/screens/harmonic-wheel.png"
-            alt={item.imageAlt}
-            width={760}
-            height={570}
-            sizes="(min-width: 1024px) 484px, (min-width: 768px) 55vw, 100vw"
-            className="block h-auto w-full"
-          />
+          {item.imageSrc && (
+            <Image
+              src={item.imageSrc}
+              alt={item.imageAlt ?? ""}
+              quality={85}
+              placeholder="blur"
+              sizes="(min-width: 1024px) 484px, (min-width: 768px) 55vw, calc(100vw - 4rem)"
+              className="block h-auto w-full"
+            />
+          )}
         </div>
       </div>
     </div>

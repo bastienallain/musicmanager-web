@@ -356,8 +356,6 @@ function HighlightRow({ feature }: { feature: Highlight }) {
           <MacWindow
             src={feature.imageSrc}
             alt={feature.imageAlt}
-            width={feature.imageWidth}
-            height={feature.imageHeight}
             glow={isDj ? "b" : "a"}
             sizes="(min-width: 1280px) 630px, (min-width: 1024px) 52vw, 100vw"
           />

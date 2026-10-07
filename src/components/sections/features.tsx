@@ -132,8 +132,8 @@ export function Features() {
                   <Image
                     src={image}
                     alt={`${title} view`}
-                    width={2560}
-                    height={1720}
+                    quality={85}
+                    placeholder="blur"
                     sizes="(min-width: 488px) 380px, 78vw"
                     className="block h-auto w-full"
                   />

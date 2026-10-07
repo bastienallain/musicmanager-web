@@ -143,7 +143,7 @@ function StickyTour() {
             >
               {steps.map((step, i) => (
                 <motion.div
-                  key={step.image}
+                  key={step.title}
                   className="absolute inset-0"
                   initial={false}
                   animate={{
@@ -156,8 +156,8 @@ function StickyTour() {
                   <Image
                     src={step.image}
                     alt={step.imageAlt}
-                    width={step.width}
-                    height={step.height}
+                    quality={85}
+                    placeholder="blur"
                     sizes="(min-width: 1280px) 820px, 66vw"
                     className="h-full w-full object-cover object-top"
                   />
@@ -203,8 +203,6 @@ function StackedTour() {
           <MacWindow
             src={step.image}
             alt={step.imageAlt}
-            width={step.width}
-            height={step.height}
             sizes="(min-width: 640px) calc(100vw - 5rem), calc(100vw - 2rem)"
             glow={i === 2 ? "b" : "a"}
             className="mt-6"

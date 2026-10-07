@@ -13,18 +13,6 @@ import Link from "next/link";
 
 const { hero } = siteConfig;
 
-function fadeUp(delay: number) {
-  return {
-    initial: { opacity: 0, y: 14 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.7, delay, ease: easeOutCubic },
-  };
-}
-
-// Props d'animation figées : créées une fois au chargement du module.
-const [fadeEyebrow, fadeTitle, fadeSubtitle, fadeCtas, fadePlatforms] = [
-  0, 0.08, 0.16, 0.24, 0.32,
-].map(fadeUp);
 
 function StatusPill() {
   return (
@@ -64,32 +52,28 @@ export function Hero() {
         />
 
         <div className="container mx-auto px-4 pt-16 text-center sm:pt-24">
-          <motion.p
-            {...fadeEyebrow}
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
+          <p
+            className="motion-safe:animate-fade-up inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
           >
             <span className="h-px w-6 bg-deck-a/60" aria-hidden />
             {hero.eyebrow}
             <span className="h-px w-6 bg-deck-a/60" aria-hidden />
-          </motion.p>
+          </p>
 
-          <motion.h1
-            {...fadeTitle}
-            className="mx-auto mt-6 max-w-4xl text-balance text-[2.6rem] font-semibold leading-[1.05] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl"
+          <h1
+            className="motion-safe:animate-fade-up [animation-delay:80ms] mx-auto mt-6 max-w-4xl text-balance text-[2.6rem] font-semibold leading-[1.05] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl"
           >
             {hero.title}
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            {...fadeSubtitle}
-            className="mx-auto mt-6 max-w-2xl text-balance text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
+          <p
+            className="motion-safe:animate-fade-up [animation-delay:160ms] mx-auto mt-6 max-w-2xl text-balance text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
             {hero.subtitle}
-          </motion.p>
+          </p>
 
-          <motion.div
-            {...fadeCtas}
-            className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5"
+          <div
+            className="motion-safe:animate-fade-up [animation-delay:240ms] mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5"
           >
             <Link
               href="#cta"
@@ -107,12 +91,11 @@ export function Hero() {
                 className="size-4 transition-transform group-hover:translate-x-0.5"
               />
             </Link>
-          </motion.div>
+          </div>
 
-          <motion.ul
-            {...fadePlatforms}
+          <ul
             aria-label="Platforms"
-            className="mt-8 flex flex-wrap items-center justify-center gap-2"
+            className="motion-safe:animate-fade-up [animation-delay:320ms] mt-8 flex flex-wrap items-center justify-center gap-2"
           >
             {siteConfig.platforms.map((p) => {
               const available = p.status === "available";
@@ -142,7 +125,7 @@ export function Hero() {
                 </li>
               );
             })}
-          </motion.ul>
+          </ul>
         </div>
 
         {/* Visuel : forme d'onde trois bandes derrière une vraie capture de l'app. */}
@@ -150,10 +133,7 @@ export function Hero() {
           <motion.div
             aria-hidden
             style={{ y: reduce ? 0 : waveY }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.4 }}
-            className="pointer-events-none absolute inset-x-[-10%] top-[-3rem] -z-10 h-40 opacity-70 [mask-image:linear-gradient(to_right,transparent,black_18%,black_82%,transparent)] sm:top-[-4rem] sm:h-56"
+            className="motion-safe:animate-fade-in [animation-delay:400ms] pointer-events-none absolute inset-x-[-10%] top-[-3rem] -z-10 h-40 opacity-70 [mask-image:linear-gradient(to_right,transparent,black_18%,black_82%,transparent)] sm:top-[-4rem] sm:h-56"
           >
             <BandWaveform bars={260} />
           </motion.div>
@@ -178,8 +158,6 @@ export function Hero() {
               <MacWindow
                 src={hero.image}
                 alt={hero.imageAlt}
-                width={2560}
-                height={1720}
                 preload
                 sizes="(min-width: 1152px) 1120px, calc(100vw - 2rem)"
               />

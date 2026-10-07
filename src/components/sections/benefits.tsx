@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/config";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { motion } from "framer-motion";
 import { ArrowDownIcon, CheckIcon } from "lucide-react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 
 type Benefit = (typeof siteConfig.benefits)[number];
 
@@ -50,12 +50,12 @@ export function Benefits() {
               <div className="relative mt-auto aspect-[15/8] overflow-hidden border-t border-white/[0.06]">
                 {benefit.rename ? (
                   <RenameVisual rename={benefit.rename} />
-                ) : (
+                ) : benefit.image ? (
                   <>
-                    <CroppedShot benefit={benefit} />
+                    <CroppedShot image={benefit.image} alt={benefit.text} />
                     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background to-transparent" />
                   </>
-                )}
+                ) : null}
               </div>
             </motion.li>
           ))}
@@ -65,28 +65,17 @@ export function Benefits() {
   );
 }
 
-const ASPECT = 8 / 15;
-
-// Agrandit une zone de la capture : à pleine largeur, le texte de l'app serait illisible.
-function CroppedShot({ benefit }: { benefit: Benefit }) {
-  const [srcW, srcH] = benefit.size;
-  const [x, y, w] = benefit.crop;
-  // L'image est agrandie de `zoom` par rapport à la carte (≈ 480px en 2 colonnes).
-  const zoom = srcW / w;
-  const sizes = `(min-width: 1024px) ${Math.ceil(480 * zoom)}px, (min-width: 768px) ${Math.ceil(50 * zoom)}vw, ${Math.ceil(100 * zoom)}vw`;
+// Recadrages WebP au format de la carte (15:8) : plus de zoom CSS sur la capture entière.
+function CroppedShot({ image, alt }: { image: StaticImageData; alt: string }) {
   return (
     <Image
-      src={benefit.image}
-      alt={benefit.text}
-      width={srcW}
-      height={srcH}
-      sizes={sizes}
-      className="absolute h-auto max-w-none"
-      style={{
-        width: `${(srcW / w) * 100}%`,
-        left: `${(-x / w) * 100}%`,
-        top: `${(-y / (w * ASPECT)) * 100}%`,
-      }}
+      src={image}
+      alt={alt}
+      fill
+      quality={85}
+      placeholder="blur"
+      sizes="(min-width: 1024px) 496px, (min-width: 768px) calc(50vw - 2.5rem), calc(100vw - 2rem)"
+      className="object-cover object-top"
     />
   );
 }
