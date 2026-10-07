@@ -200,7 +200,8 @@ export function DeckRelay() {
           />
           <div
             className="relative overflow-hidden rounded-xl border border-white/10 bg-surface shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] ring-1 ring-black/60"
-            style={{ aspectRatio: "2560 / 1720" }}
+            // Ratio des captures elles-mêmes : le cadre suit si elles changent.
+            style={{ aspectRatio: `${SHOTS[0].image.width} / ${SHOTS[0].image.height}` }}
           >
             {SHOTS.map((shot, i) => {
               const visible = (i === 1) === mix;

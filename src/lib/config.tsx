@@ -220,14 +220,14 @@ export const siteConfig = {
     listen: {
       label: "Library",
       image: libraryPlaying,
-      imageAlt: "Library view with Nuit Blanche by Motorbass in the player",
+      imageAlt: "Library view with Nuit Blanche by Léa Moreau in the player",
     },
     mix: {
       label: "DJ Mixer",
       image: djMixerRelay,
       imageAlt: "DJ Mixer with Nuit Blanche continuing on deck A",
     },
-    nowPlaying: { title: "Nuit Blanche", artist: "Motorbass", bpm: "124.0" },
+    nowPlaying: { title: "Nuit Blanche", artist: "Léa Moreau", bpm: "124.0" },
     note: "Same track, same position. No reload, no silence.",
   },
   features: [
@@ -286,7 +286,7 @@ export const siteConfig = {
     { icon: "gain", name: "ReplayGain", detail: "EBU R128 at −14 LUFS. Off by default in the player, and the header says when it's on." },
     { icon: "shuffle", name: "Shuffle & repeat", detail: "Shuffle plays the whole list once before repeating. Repeat the list or a single track." },
     { icon: "gallery", name: "Cover gallery", detail: "Artwork in perspective above the track list. It slides to the track that's playing." },
-    { icon: "greyed", name: "Greyed, not hidden", detail: "Missing files and low-quality tracks stay in the list with their data, greyed and skipped. A tooltip says why." },
+    { icon: "greyed", name: "Greyed, not hidden", detail: "Missing files stay in the list with their data, greyed. Low-quality tracks still play, flagged in amber, and can be hidden in Settings." },
     { icon: "watch", name: "Folder watching", detail: "Changes made while the app was closed are caught up at launch. Unplugging a drive never empties your library." },
     { icon: "playlists", name: "Playlists in the sidebar", detail: "Playlists and smart playlists one click away, under Explorer." },
     { icon: "exclusive", name: "Exclusive mode (macOS)", detail: "On external DACs, no other app mixes into the sound." },
@@ -590,11 +590,13 @@ export const siteConfig = {
       question: "Why are some tracks greyed out?",
       answer: (
         <span>
-          A greyed track is either missing from disk or below the quality bar
-          (for example an MP3 under 320 kb/s). It keeps its cues, notes and
-          history, but isn’t played or loaded on a deck. A tooltip gives the
-          reason. In the Up Next queue and the DJ track picker, grey also
-          marks tracks you’ve already played.
+          A greyed track is missing from disk, or in a format the app doesn’t
+          play (Opus, WMA). It keeps its cues, notes and history, and a
+          tooltip gives the reason. Tracks below the quality bar (for example
+          an MP3 under 320 kb/s) aren’t greyed: they play, with their format
+          in amber, but stay out of analysis, the decks and exports. In the
+          Up Next queue and the DJ track picker, grey also marks tracks
+          you’ve already played.
         </span>
       ),
     },

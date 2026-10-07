@@ -171,7 +171,7 @@ Liens : Fonctionnalités, Tarifs, Questions, Licences tierces, Contact. L'adress
   - **rattrapage au démarrage** de ce qui a changé pendant que l'app était fermée, en tâche de fond ;
   - un disque débranché ne vide jamais la bibliothèque.
 - **Fichiers introuvables gardés grisés** avec leurs repères, note, favori, playlists et historique ; ils redeviennent normaux si le fichier revient. Retrait groupé depuis le menu Fichier.
-- **Titres de qualité trop basse grisés et ignorés** : MP3 sous 320 kb/s, AAC et Vorbis sous 256 kb/s, WAV et AIFF sous 16 bits ou 44,1 kHz, tout Opus et WMA. Une infobulle dit pourquoi.
+- **Titres de qualité trop basse lus, sans les fonctions de l'app** (#371) : MP3 sous 320 kb/s, AAC et Vorbis sous 256 kb/s, WAV et AIFF sous 16 bits ou 44,1 kHz. Ils se lisent dans le lecteur et la file « À suivre », avec le format en ambre et un badge « Basse déf. » dans l'en-tête, mais restent exclus des analyses, de Discogs/MusicBrainz, des platines, des playlists intelligentes, d'Harmonic Mix et des exports. Un réglage (coupé par défaut) les masque des listes. Opus et WMA restent grisés.
 - **Rapide** : 50 000 morceaux s'ouvrent en environ 100 ms.
 - **Galerie de pochettes** en perspective au-dessus de la liste, qui glisse jusqu'au morceau en cours ; un clic lance la lecture à partir d'une pochette.
 - **Affichage** : pochette ou initiales, titre et artiste, BPM, clé Camelot colorée, favori d'un clic, chargement sur la platine A ou B.
@@ -245,7 +245,7 @@ Polices : Figtree pour le texte, IBM Plex Mono pour les chiffres. Icônes Phosph
   FLAC, WAV, AIFF, ALAC, MP3, AAC, Ogg Vorbis, jusqu'à 32 bits / 768 kHz. Le moteur gère le DSD (DSF et DFF), mais ces fichiers ne peuvent pas encore être ajoutés à la bibliothèque. Opus et WMA ne sont pas lus.
 
 - **Pourquoi certains morceaux sont-ils grisés ?**
-  Le fichier est introuvable, ou sa qualité est trop basse (un MP3 sous 320 kb/s, par exemple). Le morceau garde ses repères, ses notes et son historique, mais n'est ni lu ni chargé sur une platine ; une infobulle dit pourquoi. Dans la file « À suivre » et le sélecteur du DJ Mixer, le gris signale aussi les morceaux déjà joués.
+  Le fichier est introuvable, ou dans un format que l'app ne lit pas (Opus, WMA). Le morceau garde ses repères, ses notes et son historique ; une infobulle dit pourquoi. Un titre sous le seuil de qualité (un MP3 sous 320 kb/s, par exemple) n'est pas grisé : il se lit, format en ambre, mais reste hors des analyses, des platines et des exports. Dans la file « À suivre » et le sélecteur du DJ Mixer, le gris signale aussi les morceaux déjà joués.
 
 - **L'app peut-elle supprimer mes fichiers ?**
   Seulement si vous le demandez. Les fichiers vont à la Corbeille du Mac, sauf si vous choisissez de les supprimer définitivement.
@@ -276,7 +276,7 @@ Polices : Figtree pour le texte, IBM Plex Mono pour les chiffres. Icônes Phosph
 - **La lecture de fichiers DSD dans l'app** : le moteur existe, mais les fichiers n'entrent pas dans la bibliothèque. Ni DSD dans le hero, les formats ou les tarifs. Et jamais de DSD natif sur Mac : c'est le DoP, ou une conversion PCM.
 - Le 32 bits bit-perfect sur Mac : 24 bits effectifs.
 - La lecture des formats Opus et WMA (ils apparaissent grisés).
-- La lecture des MP3 sous 320 kb/s et des autres fichiers sous le seuil de qualité : ils sont grisés et ignorés.
+- Les fonctions de l'app (analyse, platines, exports, Harmonic Mix) sur les titres sous le seuil de qualité : ils se lisent, sans plus. Ni le bouton « Acheter en HD » et son texte, à valider côté produit.
 - **Les touches média du clavier** et les boutons du widget « À l'écoute » : non vérifiés sur l'app lancée. On ne parle que de l'affichage du widget.
 - **Une compatibilité avec des marques de streamers** (Linn, Naim, Cambridge…) : DLNA validé seulement sur un streamer simulé.
 - La lecture qui continue quand l'app est fermée avec OpenHome : pas encore.
