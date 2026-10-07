@@ -90,7 +90,7 @@ export function Hero() {
         >
           <Link
             href="#cta"
-            className="inline-flex h-11 items-center gap-2 rounded-full bg-deck-a px-6 text-sm font-semibold text-background shadow-[0_0_0_1px_rgba(53,178,196,0.4),0_10px_40px_-10px_rgba(53,178,196,0.7)] transition-colors hover:bg-deck-a/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-deck-a px-6 text-sm font-semibold text-background shadow-[0_0_0_1px_rgba(74,141,255,0.4),0_10px_40px_-10px_rgba(74,141,255,0.7)] transition-colors hover:bg-deck-a/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {siteConfig.cta}
           </Link>
@@ -166,8 +166,8 @@ export function Hero() {
             <MacWindow
               src={hero.image}
               alt={hero.imageAlt}
-              width={2548}
-              height={1590}
+              width={2560}
+              height={1720}
               priority
               sizes="(min-width: 1152px) 1120px, 100vw"
             />

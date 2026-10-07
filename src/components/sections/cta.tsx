@@ -234,7 +234,7 @@ export function CTA() {
                   "size-2 rounded-full",
                   submitted
                     ? "bg-band-mid shadow-[0_0_8px_2px_rgba(70,196,110,0.55)]"
-                    : "bg-deck-a shadow-[0_0_8px_2px_rgba(53,178,196,0.5)] animate-pulse motion-reduce:animate-none"
+                    : "bg-deck-a shadow-[0_0_8px_2px_rgba(74,141,255,0.5)] animate-pulse motion-reduce:animate-none"
                 )}
               />
               {copy.eyebrow}
@@ -295,7 +295,7 @@ export function CTA() {
                             className={cn(
                               "size-1.5 rounded-full",
                               checked
-                                ? "bg-deck-a shadow-[0_0_6px_1px_rgba(53,178,196,0.6)]"
+                                ? "bg-deck-a shadow-[0_0_6px_1px_rgba(74,141,255,0.6)]"
                                 : "bg-raised ring-1 ring-white/10"
                             )}
                           />

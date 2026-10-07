@@ -9,8 +9,8 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const relay = siteConfig.deckRelay;
-const TRACK_SECONDS = 182; // S.O.T.E dure 3:02
-const START_SECONDS = 9;
+const TRACK_SECONDS = 150; // Nuit Blanche (démo) dure 2:30
+const START_SECONDS = 48;
 
 const formatTime = (s: number) =>
   `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -154,7 +154,7 @@ export function DeckRelay() {
           />
           <div
             className="relative overflow-hidden rounded-xl border border-white/10 bg-surface shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] ring-1 ring-black/60"
-            style={{ aspectRatio: "1.6" }}
+            style={{ aspectRatio: "2560 / 1720" }}
           >
             {shots.map((shot, i) => {
               const visible = (i === 1) === mix;

@@ -1,14 +1,13 @@
-import {
-  JetBrains_Mono as FontMono,
-  Inter as FontSans,
-} from "next/font/google";
+import { Figtree, IBM_Plex_Mono } from "next/font/google";
 
-export const fontSans = FontSans({
+// Les polices de l'app (thème Glass) : Figtree pour le texte, IBM Plex Mono pour les afficheurs.
+export const fontSans = Figtree({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-figtree",
 });
 
-export const fontMono = FontMono({
+export const fontMono = IBM_Plex_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
 });

@@ -1,8 +1,8 @@
 import {
   AudioWaveformIcon,
   CastIcon,
-  Disc3Icon,
   LibraryIcon,
+  ListPlusIcon,
   SlidersHorizontalIcon,
   TagsIcon,
 } from "lucide-react";
@@ -31,15 +31,16 @@ type Testimonial = {
 
 // Palette de l'app (musica v2), réutilisée par les visuels générés en code.
 export const palette = {
-  bg: "#121416",
-  surface: "#1A1D20",
-  raised: "#24282C",
-  text: "#E6E9EB",
-  textMuted: "#98A1A7",
-  deckA: "#35B2C4",
+  bg: "#07080A",
+  surface: "#0D0F12",
+  raised: "#15181D",
+  text: "#E9EDF2",
+  textMuted: "#8A94A0",
+  deckA: "#4A8DFF",
   deckB: "#D08B6C",
+  readout: "#30D26A",
   low: "#E5484D",
-  mid: "#46C46E",
+  mid: "#30D26A",
   high: "#3E8BFF",
 } as const;
 
@@ -48,6 +49,8 @@ const APP_NAME = "Devosound";
 
 export const siteConfig = {
   name: APP_NAME,
+  // Logotype de l'app : « Devo » en blanc, « sound » en bleu.
+  wordmark: ["Devo", "sound"] as const,
   tagline: "Your music, exactly as it was recorded.",
   description:
     "The music library for DJs and audiophiles on Mac: bit-perfect sound, a clean collection and a DJ mixer, in one app.",
@@ -62,7 +65,7 @@ export const siteConfig = {
     "bit-perfect audio player Mac",
     "DJ music library",
     "hi-res FLAC player macOS",
-    "DSD DoP Mac",
+    "gapless music player Mac",
     "DLNA OpenHome player",
     "BPM key analysis Camelot",
     "DJ software Mac",
@@ -88,11 +91,11 @@ export const siteConfig = {
     eyebrow: "macOS first · Windows & Linux coming soon",
     title: "Your music, exactly as it was recorded.",
     subtitle:
-      "Library, bit-perfect playback and a two-deck DJ mixer in one app, built for the Mac first. From 16-bit FLAC to 24-bit / 384 kHz and DSD, untouched.",
+      "Library, bit-perfect playback and a two-deck DJ mixer in one app, built for the Mac first. From 16-bit FLAC to 24-bit / 384 kHz, sent to your DAC untouched.",
     secondaryCta: { href: "#features", label: "See the features" },
     image: "/screens/library-playing.png",
     imageAlt:
-      `${APP_NAME} library view with the color waveform player and VU meter`,
+      `${APP_NAME} library view with the cover gallery, the track list and the player bar`,
     status: { mode: "Bit-perfect", detail: "FLAC 24/192 → USB DAC" },
   },
   // Section « chaîne du signal » : un mode par état affiché dans l'en-tête de l'app.
@@ -157,10 +160,7 @@ export const siteConfig = {
     "MP3",
     "AAC",
     "Ogg Vorbis",
-    "DSF",
-    "DFF",
     "up to 768 kHz",
-    "DSD64 → DSD256 (DoP)",
   ],
   // En-tête de la visite guidée (section #tour).
   tour: {
@@ -173,29 +173,29 @@ export const siteConfig = {
     {
       title: "Library",
       description:
-        "Artwork, BPM, Camelot key and one-click loading onto deck A or B, on every row.",
+        "A cover gallery above the track list, BPM and Camelot key on every row, and an Up Next queue you reorder by dragging.",
       image: "/screens/library-playing.png",
-      imageAlt: "Library view with the track list, BPM and deck A / B buttons",
-      width: 2548,
-      height: 1590,
+      imageAlt: "Library view with the cover gallery, the track list, BPM, key and deck A / B buttons",
+      width: 2560,
+      height: 1720,
     },
     {
       title: "Player",
       description:
-        "A large color waveform, a real VU meter and the actual output quality, always in view.",
+        "BPM and key in green readouts, a mini-waveform as the progress bar, shuffle and repeat, and the actual output quality always in the header.",
       image: "/screens/player.png",
-      imageAlt: "Player with waveform, transport controls and output level meter",
-      width: 1920,
-      height: 1200,
+      imageAlt: "Player bar with artwork, shuffle and repeat, transport controls and the mini waveform",
+      width: 2560,
+      height: 1720,
     },
     {
       title: "DJ Mixer",
       description:
-        "Two decks, a center mixer and stacked waveforms with beat grid, hot cues and loops.",
+        "Two decks, a center mixer and color waveforms with beat grid, hot cues and loops, zoomable from ×1 to ×8.",
       image: "/screens/dj-mixer.png",
       imageAlt: "DJ Mixer with two loaded decks and stacked color waveforms",
-      width: 1920,
-      height: 1200,
+      width: 2560,
+      height: 1720,
     },
   ],
   // Section #relay : passer de l'écoute au mix sans couper le son.
@@ -208,18 +208,18 @@ export const siteConfig = {
     listen: {
       label: "Library",
       image: "/screens/library-playing.png",
-      imageAlt: "Library view playing S.O.T.E at 0:09",
-      width: 2548,
-      height: 1590,
+      imageAlt: "Library view with Nuit Blanche by Motorbass in the player",
+      width: 2560,
+      height: 1720,
     },
     mix: {
       label: "DJ Mixer",
       image: "/screens/dj-mixer-relay.png",
-      imageAlt: "DJ Mixer with the same track continuing on deck A",
-      width: 2554,
-      height: 1594,
+      imageAlt: "DJ Mixer with Nuit Blanche continuing on deck A",
+      width: 2560,
+      height: 1720,
     },
-    nowPlaying: { title: "S.O.T.E", artist: "EAZYBAKED", bpm: "160.0" },
+    nowPlaying: { title: "Nuit Blanche", artist: "Motorbass", bpm: "124.0" },
     note: "Same track, same position. No reload, no silence.",
   },
   features: [
@@ -230,33 +230,33 @@ export const siteConfig = {
       icon: <AudioWaveformIcon className="h-6 w-6" />,
     },
     {
-      name: "DSD",
+      name: "Up Next queue",
       description:
-        "DSF and DFF playback, DSD64 to DSD256 over DoP to compatible DACs, and high-quality PCM conversion for the others.",
-      icon: <Disc3Icon className="h-6 w-6" />,
+        "Play a track next or add it to the end, reorder by dragging, save the whole queue as a playlist. Played tracks stay in it, greyed, until you clear them.",
+      icon: <ListPlusIcon className="h-6 w-6" />,
     },
     {
       name: "DLNA / OpenHome streaming",
       description:
-        "Files go to your streamer untouched, up to 24/384 and DSD256, with gapless playback. OpenHome devices receive the whole queue.",
+        "Files go to your streamer untouched, up to 24/384, gapless when the streamer supports it. OpenHome devices receive the whole queue.",
       icon: <CastIcon className="h-6 w-6" />,
     },
     {
       name: "DJ Mixer",
       description:
-        "Two decks with SYNC, keylock, 8 hot cues, grid-locked loops, a 3-band EQ with KILL and headphone cueing on a second output.",
+        "Two decks with SYNC, keylock, 8 hot cues, grid-locked loops, a 3-band EQ with KILL and headphone cueing on a second output. Tracks already played are greyed in the track picker.",
       icon: <SlidersHorizontalIcon className="h-6 w-6" />,
     },
     {
       name: "Analysis & tags",
       description:
-        "BPM, beat grid and Camelot key computed in the background. Tags completed from MusicBrainz and Discogs, artwork up to 1200 px.",
+        "BPM and beat grid computed in the background, Camelot keys in one batch. Empty tags filled from MusicBrainz and Discogs, artwork up to 1200 px.",
       icon: <TagsIcon className="h-6 w-6" />,
     },
     {
       name: "Library",
       description:
-        "50,000 tracks open in about 100 ms. Renamed or moved files keep their favorites, ratings, hot cues and playlists.",
+        "50,000 tracks open in about 100 ms. Renamed or moved files keep their favorites, ratings, hot cues and playlists, and changes made while the app was closed are picked up at launch.",
       icon: <LibraryIcon className="h-6 w-6" />,
     },
   ],
@@ -269,21 +269,25 @@ export const siteConfig = {
   // Clés d'icônes résolues dans components/sections/features.tsx.
   moreFeatures: [
     { icon: "smart", name: "Smart Playlists", detail: "Rule-based playlists that update themselves." },
-    { icon: "history", name: "History & new tracks", detail: "Every play logged, recent additions in one place." },
-    { icon: "stats", name: "Statistics", detail: "Genres, BPM by tempo, formats and the lossless share, years, top tracks." },
+    { icon: "history", name: "History & new tracks", detail: "Every play logged with your top tracks, recent additions in one place." },
+    { icon: "stats", name: "Statistics", detail: "Genres, BPM by tempo, formats and the lossless share, years." },
     { icon: "duplicates", name: "Duplicates", detail: "Found, then checked before anything is removed." },
-    { icon: "cleanup", name: "Library cleanup", detail: "Low-bitrate or incomplete files, listed for review before anything is deleted." },
+    { icon: "cleanup", name: "Library cleanup", detail: "Low-quality or incomplete files, listed for review. Deleted files go to the Mac's Trash unless you ask otherwise." },
     { icon: "convert", name: "Format conversion", detail: "Bit-exact to WAV, AIFF and FLAC, hi-res included, plus MP3 and Ogg." },
-    { icon: "export", name: "DJ export", detail: "Rekordbox XML, WAV files or a CSV sheet, for the whole library, a genre or a playlist." },
-    { icon: "gain", name: "ReplayGain", detail: "EBU R128 at −14 LUFS, 0.3 s per track, within 0.01 dB of reference tools." },
-    { icon: "import", name: "Auto-import", detail: "New downloads move into the library on their own." },
-    { icon: "watch", name: "Folder watching", detail: "Unplugging a drive never empties your library." },
+    { icon: "export", name: "DJ export", detail: "A Rekordbox XML track list, WAV files or a CSV sheet." },
+    { icon: "gain", name: "ReplayGain", detail: "EBU R128 at −14 LUFS. Off by default in the player, and the header says when it's on." },
+    { icon: "shuffle", name: "Shuffle & repeat", detail: "Shuffle plays the whole list once before repeating. Repeat the list or a single track." },
+    { icon: "gallery", name: "Cover gallery", detail: "Artwork in perspective above the track list. It slides to the track that's playing." },
+    { icon: "greyed", name: "Greyed, not hidden", detail: "Missing files and low-quality tracks stay in the list with their data, greyed and skipped. A tooltip says why." },
+    { icon: "watch", name: "Folder watching", detail: "Changes made while the app was closed are caught up at launch. Unplugging a drive never empties your library." },
+    { icon: "playlists", name: "Playlists in the sidebar", detail: "Playlists and smart playlists one click away, under Explorer." },
     { icon: "exclusive", name: "Exclusive mode (macOS)", detail: "On external DACs, no other app mixes into the sound." },
-    { icon: "device", name: "Per-device profiles", detail: "Mac speakers, headphones, HDMI, USB DAC or Bluetooth, each remembered." },
-    { icon: "keyboard", name: "Keyboard shortcuts (macOS)", detail: "Space to play, arrows to seek 10 s (30 s with Shift), Cmd + arrows for tracks and volume." },
-    { icon: "media", name: "Media keys & Now Playing (macOS)", detail: "Keyboard media keys and the Control Center widget." },
+    { icon: "device", name: "Per-device profiles", detail: "Mac speakers, HDMI, USB DAC or Bluetooth, each remembered." },
+    { icon: "keyboard", name: "Keyboard shortcuts (macOS)", detail: "Space to play, arrows to seek 10 s (30 s with Shift), Cmd + arrows for tracks and volume, ⌘K to search." },
+    { icon: "settings", name: "Settings (⌘,)", detail: "Waveform style, Discogs account, and whether the DJ Mixer opens once both decks are loaded." },
+    { icon: "media", name: "Now Playing (macOS)", detail: "Title, artist and artwork in the Control Center widget." },
     { icon: "tags", name: "Tag editing", detail: "Serato, Rekordbox and Traktor data left untouched." },
-    { icon: "headphones", name: "Headphone cueing", detail: "On a second output, with the delay between the two cards compensated." },
+    { icon: "headphones", name: "Headphone cueing", detail: "On a second output, with clock drift between the two cards compensated." },
   ],
   moreFeaturesLabel: "Everything else",
   moreViewsLabel: "More views",
@@ -303,16 +307,16 @@ export const siteConfig = {
       description:
         "The app sets your sound card to each track's sample rate and sends the samples as they are: no conversion, no software volume. The mode is always shown: Bit-perfect, Resampled 192 → 96 kHz, or Bluetooth (compressed). Nothing is hidden.",
       imageSrc: "/screens/player.png",
-      imageAlt: "Player with output quality indicator and VU meter",
-      imageWidth: 1920,
-      imageHeight: 1200,
+      imageAlt: "Library with the player bar, the output menu and the track in progress",
+      imageWidth: 2560,
+      imageHeight: 1720,
       direction: "rtl" as const,
       // Panneau de specs dessiné en SVG à côté de la capture.
       specs: [
         { label: "Files played", value: "16/44.1 → 32/768", unit: "bit / kHz" },
         { label: "Fallback resampler noise", value: "−141", unit: "dB" },
         { label: "Integer output on macOS", value: "24", unit: "effective bits" },
-        { label: "DSD", value: "DSD64 → 256", unit: "DoP" },
+        { label: "Output links detected", value: "10", unit: "USB, HDMI, AirPlay…" },
       ],
       modes: ["Bit-perfect", "Resampled 192 → 96 kHz", "Bluetooth (compressed)"],
     },
@@ -321,17 +325,17 @@ export const siteConfig = {
       eyebrow: "DJ",
       title: "A real mixer.",
       description:
-        "Two decks with tempo and phase SYNC, keylock, 8 hot cues, 1 to 16-beat loops locked to the grid, a 3-band EQ with KILL, and headphone cueing on a second output. Tracks stay at 24-bit with dither.",
+        "Two decks with tempo and phase SYNC, keylock, 8 hot cues, 1 to 16-beat loops locked to the grid, a 3-band EQ with KILL, and headphone cueing on a second output. Load a track on A or B from the library and it waits, paused. Click a deck's key and the other deck's track picker shows only compatible keys.",
       imageSrc: "/screens/dj-mixer.png",
       imageAlt: "DJ Mixer with two decks and stacked color waveforms",
-      imageWidth: 1920,
-      imageHeight: 1200,
+      imageWidth: 2560,
+      imageHeight: 1720,
       direction: "ltr" as const,
       stats: [
         { value: "8", label: "hot cues per deck" },
         { value: "1–16", label: "beat loops on the grid" },
         { value: "11 ms", label: "from press to sound" },
-        { value: "3-band", label: "EQ with KILL" },
+        { value: "×1–×8", label: "waveform zoom" },
       ],
     },
     {
@@ -339,7 +343,7 @@ export const siteConfig = {
       eyebrow: "Collection",
       title: "A collection that stays clean.",
       description:
-        "BPM, beat grid and Camelot key analyzed automatically. Tags completed from MusicBrainz and Discogs, keeping only the artist's official album, never a random compilation. High-resolution artwork.",
+        "BPM and beat grid analyzed in the background, Camelot keys in one batch. Empty tags filled from MusicBrainz and Discogs, keeping only the artist's official album, never a random compilation. Artwork up to 1200 px.",
       imageSrc: "/screens/bpm.png",
       imageAlt: "BPM analysis view with tempo and Camelot key for each track",
       imageWidth: 2560,
@@ -380,29 +384,29 @@ export const siteConfig = {
     {
       title: "Color waveform",
       content:
-        "Lows in red, mids in green, highs in blue: read a track's structure at a glance.",
+        "Lows in red, mids in green, highs in blue: read a track's structure at a glance. Serato or VirtualDJ style, your choice in Settings.",
       imageSrc: "/screens/waveform-color.png",
       imageAlt:
-        "Color waveform of a track, with the overview, the zoomed view with hot cues and the full-track strip",
+        "Color waveforms of two decks: full-track overviews above, zoomed views below",
       fullWidth: true,
       chips: ["Low", "Mid", "High"],
-      note: "Click anywhere on the waveform to jump there.",
+      note: "Click anywhere on the waveform to jump there. In the DJ Mixer, zoom from ×1 to ×8.",
     },
     {
       title: "Hi-fi streaming over DLNA / OpenHome",
       content:
-        "The file reaches your streamer untouched, up to 24/384 and DSD, with gapless playback.",
+        "The file reaches your streamer untouched, up to 24/384, gapless when the streamer supports it.",
       imageSrc: "/screens/cast.png",
       imageAlt:
         "Play on a network streamer dialog showing Bit-perfect, 24-bit / 192 kHz, FLAC",
       fullWidth: false,
       chips: ["DLNA / UPnP", "OpenHome", "Gapless"],
-      note: "OpenHome devices (Linn, Naim, Audiolab, Cambridge…) receive the whole queue.",
+      note: "OpenHome devices receive the whole queue. Not yet tried on specific brands.",
     },
     {
-      title: "DSD",
+      title: "DSD, in the engine",
       content:
-        "DSF and DFF playback, DoP to compatible DACs, high-quality PCM conversion for the rest.",
+        "The audio engine plays DSF and DFF: DoP to compatible DACs, PCM conversion for the rest. DSD files can't be added to the library yet.",
       imageSrc: "/screens/vu-meter.png",
       imageAlt: "VU meter states",
       fullWidth: false,
@@ -432,8 +436,8 @@ export const siteConfig = {
         "The sound card follows each track's sample rate, and the header shows what you actually hear.",
       image: "/screens/player.png",
       // Zone affichée dans la capture, en pixels source : [x, y, largeur].
-      size: [1920, 1200],
-      crop: [960, 20, 960],
+      size: [2560, 1720],
+      crop: [560, 1208, 960],
     },
     {
       id: 2,
@@ -441,17 +445,17 @@ export const siteConfig = {
       detail:
         "The track carries on on deck A or B, at the same position. It works the other way too.",
       image: "/screens/dj-mixer-relay.png",
-      size: [2554, 1594],
-      crop: [0, 168, 1500],
+      size: [2560, 1720],
+      crop: [0, 154, 1500],
     },
     {
       id: 3,
       text: "Find any track among 50,000 in an instant.",
       detail:
-        "The library opens in about 100 ms. Filter by genre, format, key and BPM range.",
+        "The library opens in about 100 ms. Search with ⌘K, filter by genre, format, key and BPM range.",
       image: "/screens/library-idle.png",
-      size: [2558, 1602],
-      crop: [330, 610, 1700],
+      size: [2560, 1720],
+      crop: [480, 160, 1700],
     },
     {
       id: 4,
@@ -485,7 +489,7 @@ export const siteConfig = {
       yearlyPrice: "Free",
       features: [
         "Every feature unlocked",
-        "Bit-perfect playback and DSD",
+        "Bit-perfect playback",
         "Full DJ Mixer",
         "No account, no card",
       ],
@@ -549,9 +553,30 @@ export const siteConfig = {
       answer: (
         <span>
           FLAC, WAV, AIFF, ALAC, MP3, AAC and Ogg Vorbis up to 32-bit / 768
-          kHz, plus DSD as DSF and DFF. On macOS, 32-bit files play with 24
-          effective bits, and the app says so. Opus and WMA are not supported
-          yet.
+          kHz. On macOS, 32-bit files play with 24 effective bits, and the app
+          says so. The audio engine handles DSD (DSF and DFF), but DSD files
+          can’t be added to the library yet. Opus and WMA are not supported.
+        </span>
+      ),
+    },
+    {
+      question: "Why are some tracks greyed out?",
+      answer: (
+        <span>
+          A greyed track is either missing from disk or below the quality bar
+          (for example an MP3 under 320 kb/s). It keeps its cues, notes and
+          history, but isn’t played or loaded on a deck. A tooltip gives the
+          reason. In the Up Next queue and the DJ track picker, grey also
+          marks tracks you’ve already played.
+        </span>
+      ),
+    },
+    {
+      question: "Can it delete my files?",
+      answer: (
+        <span>
+          Only when you ask. Deleted files go to the Mac’s Trash, unless you
+          choose to delete them permanently.
         </span>
       ),
     },
@@ -578,8 +603,10 @@ export const siteConfig = {
       question: "Is my streamer compatible?",
       answer: (
         <span>
-          Any DLNA / UPnP streamer is. Those that support OpenHome (Linn, Naim,
-          Audiolab, Cambridge…) receive the full queue.
+          The app speaks standard DLNA / UPnP, and streamers that support
+          OpenHome receive the full queue. It has been tested against a
+          simulated renderer, not yet on specific brands, so we can’t list
+          compatible models.
         </span>
       ),
     },
@@ -588,7 +615,8 @@ export const siteConfig = {
       answer: (
         <span>
           Yes: two decks, SYNC, keylock, hot cues, loops, EQ and headphone
-          cueing. Hardware DJ controllers are not supported.
+          cueing, with the mouse and keyboard. Hardware DJ controllers are not
+          supported.
         </span>
       ),
     },

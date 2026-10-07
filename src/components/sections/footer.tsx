@@ -1,4 +1,4 @@
-import { LogoMark } from "@/components/logo-mark";
+import { Wordmark } from "@/components/wordmark";
 import { siteConfig } from "@/lib/config";
 
 const LINE_W = 1200;
@@ -70,10 +70,7 @@ export function Footer() {
             href="#"
             className="inline-flex items-center gap-2.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <LogoMark />
-            <span className="text-lg font-semibold tracking-tight text-foreground">
-              {siteConfig.name}
-            </span>
+            <Wordmark className="text-xl text-foreground" />
           </a>
           <p className="mt-3 font-mono text-xs tracking-wide text-muted-foreground">
             {siteConfig.footerPlatform}

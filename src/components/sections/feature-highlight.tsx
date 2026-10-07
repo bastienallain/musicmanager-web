@@ -21,17 +21,17 @@ function NoiseFloorScale() {
       <rect x="8" y="10" width="284" height="6" rx="3" fill="#24282C" />
       <defs>
         <linearGradient id="nf-fill" x1="0" x2="1">
-          <stop offset="0" stopColor="#35B2C4" stopOpacity="0.9" />
-          <stop offset="1" stopColor="#35B2C4" stopOpacity="0.15" />
+          <stop offset="0" stopColor="#4A8DFF" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#4A8DFF" stopOpacity="0.15" />
         </linearGradient>
       </defs>
       <rect x="8" y="10" width={x(-141) - 8} height="6" rx="3" fill="url(#nf-fill)" />
-      <line x1={x(-141)} x2={x(-141)} y1="4" y2="22" stroke="#35B2C4" strokeWidth="1.5" />
+      <line x1={x(-141)} x2={x(-141)} y1="4" y2="22" stroke="#4A8DFF" strokeWidth="1.5" />
       {ticks.map((t) => (
         <g key={t}>
-          <line x1={x(t)} x2={x(t)} y1="20" y2={t % 40 === 0 ? 27 : 24} stroke="#98A1A7" strokeOpacity="0.5" />
+          <line x1={x(t)} x2={x(t)} y1="20" y2={t % 40 === 0 ? 27 : 24} stroke="#8A94A0" strokeOpacity="0.5" />
           {t % 40 === 0 && (
-            <text x={x(t)} y="40" textAnchor="middle" fontSize="8" fill="#98A1A7" fontFamily="var(--font-geist-mono), monospace">
+            <text x={x(t)} y="40" textAnchor="middle" fontSize="8" fill="#8A94A0" fontFamily="var(--font-geist-mono), monospace">
               {t === 0 ? "0" : `−${-t}`}
             </text>
           )}
@@ -53,7 +53,7 @@ function SpecPanel({ specs, modes }: { specs: Spec[]; modes: string[] }) {
   }, [modes.length, reduceMotion]);
 
   const ledColor = [
-    "bg-deck-a shadow-[0_0_8px_#35B2C4]",
+    "bg-deck-a shadow-[0_0_8px_#4A8DFF]",
     "bg-[#E8B04A] shadow-[0_0_8px_#E8B04A]",
     "bg-deck-b shadow-[0_0_8px_#D08B6C]",
   ];

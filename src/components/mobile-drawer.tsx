@@ -1,6 +1,6 @@
 "use client";
 
-import { LogoMark } from "@/components/logo-mark";
+import { Wordmark } from "@/components/wordmark";
 import {
   Drawer,
   DrawerClose,
@@ -26,10 +26,7 @@ export function MobileDrawer() {
       <DrawerContent className="border-white/10 bg-surface">
         <DrawerHeader className="px-6 text-left">
           <DrawerTitle className="flex items-center gap-2.5">
-            <LogoMark />
-            <span className="text-base font-semibold tracking-tight">
-              {siteConfig.name}
-            </span>
+            <Wordmark className="text-lg" />
           </DrawerTitle>
         </DrawerHeader>
         <nav aria-label="Mobile" className="px-6">

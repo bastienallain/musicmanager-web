@@ -262,8 +262,8 @@ function WaveformCard({ item }: { item: BentoItem }) {
           <Image
             src={item.imageSrc}
             alt={item.imageAlt}
-            width={2240}
-            height={516}
+            width={2560}
+            height={450}
             sizes="(min-width: 1024px) 960px, 100vw"
             className="block h-auto w-full"
           />
@@ -606,16 +606,16 @@ function HarmonicCard({ item }: { item: BentoItem }) {
           </ul>
         </div>
         <Note>{item.note}</Note>
-        {/* Zoom sur la roue de l'app : zone x 190–1030, y 330–960 de la capture 1920×1200. */}
+        {/* Zoom sur la roue de l'app : zone x 470–1230, y 660–1230 de la capture 2560×1720. */}
         <div className="relative aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
           <Image
             src={item.imageSrc}
             alt={item.imageAlt}
-            width={1920}
-            height={1200}
-            sizes="(min-width: 1024px) 1200px, 230vw"
+            width={2560}
+            height={1720}
+            sizes="(min-width: 1024px) 1600px, 340vw"
             className="absolute h-auto max-w-none"
-            style={{ width: "228.6%", left: "-22.6%", top: "-52.4%" }}
+            style={{ width: "336.8%", left: "-61.8%", top: "-115.8%" }}
           />
         </div>
       </div>

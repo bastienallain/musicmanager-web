@@ -134,7 +134,7 @@ function StickyTour() {
             />
             <div
               className="relative overflow-hidden rounded-xl border border-white/10 bg-surface shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] ring-1 ring-black/60"
-              style={{ aspectRatio: "1.6" }}
+              style={{ aspectRatio: "2560 / 1720" }}
             >
               {steps.map((step, i) => (
                 <motion.div

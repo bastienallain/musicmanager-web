@@ -1,11 +1,9 @@
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { siteConfig } from "@/lib/config";
-import { fontSans } from "@/lib/fonts";
+import { fontMono, fontSans } from "@/lib/fonts";
 import { cn, constructMetadata } from "@/lib/utils";
 import type { Metadata, Viewport } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
 export const metadata: Metadata = constructMetadata({
@@ -14,7 +12,7 @@ export const metadata: Metadata = constructMetadata({
 
 export const viewport: Viewport = {
   colorScheme: "dark",
-  themeColor: "#121416",
+  themeColor: "#07080A",
 };
 
 export default function RootLayout({
@@ -26,7 +24,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${GeistSans.variable} ${GeistMono.variable} ${fontSans.variable}`}
+      className={`${fontSans.variable} ${fontMono.variable}`}
     >
       <body
         className={cn(

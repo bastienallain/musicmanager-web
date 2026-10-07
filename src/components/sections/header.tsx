@@ -1,6 +1,6 @@
 "use client";
 
-import { LogoMark } from "@/components/logo-mark";
+import { Wordmark } from "@/components/wordmark";
 import { MobileDrawer } from "@/components/mobile-drawer";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
@@ -32,10 +32,7 @@ export function Header() {
           aria-label={`${siteConfig.name}, home`}
           className="flex shrink-0 items-center gap-2.5"
         >
-          <LogoMark />
-          <span className="text-[15px] font-semibold tracking-tight">
-            {siteConfig.name}
-          </span>
+          <Wordmark className="text-[17px]" />
         </Link>
 
         <nav aria-label="Main" className="hidden md:block">

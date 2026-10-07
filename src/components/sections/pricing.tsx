@@ -77,7 +77,7 @@ export function Pricing() {
                 "relative flex flex-col rounded-xl border bg-surface p-6 pt-5 sm:p-7 sm:pt-6",
                 "bg-[linear-gradient(to_bottom,rgba(255,255,255,0.035),transparent_120px)]",
                 featured
-                  ? "border-deck-a/50 shadow-[0_0_0_1px_rgba(53,178,196,0.25),0_24px_70px_-24px_rgba(53,178,196,0.45)] md:-translate-y-3"
+                  ? "border-deck-a/50 shadow-[0_0_0_1px_rgba(74,141,255,0.25),0_24px_70px_-24px_rgba(74,141,255,0.45)] md:-translate-y-3"
                   : "border-border"
               )}
             >
@@ -90,7 +90,7 @@ export function Pricing() {
                     className={cn(
                       "size-2 rounded-full",
                       featured
-                        ? "bg-deck-a shadow-[0_0_8px_2px_rgba(53,178,196,0.6)] animate-pulse motion-reduce:animate-none"
+                        ? "bg-deck-a shadow-[0_0_8px_2px_rgba(74,141,255,0.6)] animate-pulse motion-reduce:animate-none"
                         : "bg-raised ring-1 ring-white/5"
                     )}
                   />
