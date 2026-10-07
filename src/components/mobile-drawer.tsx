@@ -21,7 +21,7 @@ export function MobileDrawer() {
         aria-label="Open menu"
         className="flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <MenuIcon className="size-5" />
+        <MenuIcon aria-hidden className="size-5" />
       </DrawerTrigger>
       <DrawerContent className="border-white/10 bg-surface">
         <DrawerHeader className="px-6 text-left">
@@ -36,7 +36,7 @@ export function MobileDrawer() {
                 <DrawerClose asChild>
                   <Link
                     href={item.href}
-                    className="flex h-12 items-center justify-between font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
+                    className="flex h-12 items-center justify-between rounded-sm font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {item.label}
                     <span aria-hidden className="text-deck-a/60">
@@ -52,7 +52,7 @@ export function MobileDrawer() {
           <DrawerClose asChild>
             <Link
               href="#cta"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-deck-a text-sm font-semibold text-background transition-colors hover:bg-deck-a/90"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-deck-a text-sm font-semibold text-background transition-colors hover:bg-deck-a/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               {siteConfig.cta}
             </Link>

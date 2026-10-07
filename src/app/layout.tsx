@@ -1,5 +1,4 @@
 import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { ThemeProvider } from "@/components/theme-provider";
 import { siteConfig } from "@/lib/config";
 import { fontMono, fontSans } from "@/lib/fonts";
 import { cn, constructMetadata } from "@/lib/utils";
@@ -20,26 +19,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Le site est toujours sombre : la classe `dark` est posée en dur, sans next-themes.
   return (
     <html
       lang="en"
-      suppressHydrationWarning
-      className={`${fontSans.variable} ${fontMono.variable}`}
+      className={cn("dark", fontSans.variable, fontMono.variable)}
     >
-      <body
-        className={cn(
-          "min-h-screen bg-background antialiased w-full mx-auto scroll-smooth font-sans"
-        )}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          forcedTheme="dark"
-          enableSystem={false}
-        >
-          {children}
-          <TailwindIndicator />
-        </ThemeProvider>
+      <body className="min-h-screen bg-background antialiased w-full mx-auto font-sans">
+        {children}
+        {process.env.NODE_ENV === "development" && <TailwindIndicator />}
       </body>
     </html>
   );

@@ -7,7 +7,8 @@ interface MacWindowProps {
   width: number;
   height: number;
   className?: string;
-  priority?: boolean;
+  // Réservé à l'image LCP (hero) : précharge au lieu du chargement différé.
+  preload?: boolean;
   sizes?: string;
   // Lueur colorée derrière la fenêtre (deck A par défaut).
   glow?: "a" | "b" | "none";
@@ -21,7 +22,7 @@ export function MacWindow({
   width,
   height,
   className,
-  priority,
+  preload,
   sizes = "(min-width: 1280px) 1200px, 100vw",
   glow = "a",
   chrome = false,
@@ -39,7 +40,10 @@ export function MacWindow({
       )}
       <div className="overflow-hidden rounded-xl border border-white/10 bg-surface shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] ring-1 ring-black/60">
         {chrome && (
-          <div className="flex h-7 items-center gap-1.5 border-b border-white/5 bg-raised px-3">
+          <div
+            aria-hidden
+            className="flex h-7 items-center gap-1.5 border-b border-white/5 bg-raised px-3"
+          >
             <span className="size-2.5 rounded-full bg-[#ff5f57]" />
             <span className="size-2.5 rounded-full bg-[#febc2e]" />
             <span className="size-2.5 rounded-full bg-[#28c840]" />
@@ -50,7 +54,9 @@ export function MacWindow({
           alt={alt}
           width={width}
           height={height}
-          priority={priority}
+          preload={preload}
+          loading={preload ? "eager" : undefined}
+          fetchPriority={preload ? "high" : undefined}
           sizes={sizes}
           className="block h-auto w-full"
         />

@@ -2,7 +2,8 @@
 
 import { Section } from "@/components/section";
 import { siteConfig } from "@/lib/config";
-import { motion, useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { motion } from "framer-motion";
 import { ArrowDownIcon, CheckIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -10,7 +11,7 @@ type Benefit = (typeof siteConfig.benefits)[number];
 
 export function Benefits() {
   const { title, subtitle } = siteConfig.benefitsSection;
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
 
   return (
     <div className="border-y border-white/[0.06] bg-surface/40">
@@ -25,10 +26,14 @@ export function Benefits() {
           {siteConfig.benefits.map((benefit, index) => (
             <motion.li
               key={benefit.id}
-              initial={reduce ? false : { opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: (index % 2) * 0.08, ease: "easeOut" }}
+              transition={
+                reduce
+                  ? { duration: 0 }
+                  : { duration: 0.6, delay: (index % 2) * 0.08, ease: "easeOut" }
+              }
               className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-background"
             >
               <div className="space-y-3 p-5 sm:p-7">
@@ -66,13 +71,16 @@ const ASPECT = 8 / 15;
 function CroppedShot({ benefit }: { benefit: Benefit }) {
   const [srcW, srcH] = benefit.size;
   const [x, y, w] = benefit.crop;
+  // L'image est agrandie de `zoom` par rapport à la carte (≈ 480px en 2 colonnes).
+  const zoom = srcW / w;
+  const sizes = `(min-width: 1024px) ${Math.ceil(480 * zoom)}px, (min-width: 768px) ${Math.ceil(50 * zoom)}vw, ${Math.ceil(100 * zoom)}vw`;
   return (
     <Image
       src={benefit.image}
       alt={benefit.text}
       width={srcW}
       height={srcH}
-      sizes="(min-width: 768px) 1100px, 200vw"
+      sizes={sizes}
       className="absolute h-auto max-w-none"
       style={{
         width: `${(srcW / w) * 100}%`,

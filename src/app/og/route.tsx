@@ -2,7 +2,6 @@ import { palette, siteConfig } from "@/lib/config";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { NextRequest } from "next/server";
 
 // Barres de forme d'onde déterministes, colorées comme dans l'app (graves, médiums, aigus).
 const BARS = Array.from({ length: 72 }, (_, i) => {
@@ -11,9 +10,9 @@ const BARS = Array.from({ length: 72 }, (_, i) => {
   return { h: Math.round(h), band };
 });
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const postTitle = searchParams.get("title") || siteConfig.tagline;
+// Sans lecture de la requête, la route est statique : l'image est générée une fois au build (runtime Node).
+export async function GET() {
+  const postTitle = siteConfig.tagline;
   const fontData = await readFile(
     join(process.cwd(), "src/assets/fonts/Inter-SemiBold.ttf")
   );

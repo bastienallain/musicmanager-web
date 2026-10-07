@@ -68,6 +68,7 @@ export function Footer() {
         <div>
           <a
             href="#"
+            aria-label={`${siteConfig.name}, back to top`}
             className="inline-flex items-center gap-2.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Wordmark className="text-xl text-foreground" />
@@ -83,7 +84,7 @@ export function Footer() {
               <li key={link.text}>
                 <a
                   href={link.href}
-                  className="text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
+                  className="inline-flex min-h-6 items-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {link.text}
                 </a>
@@ -93,7 +94,7 @@ export function Footer() {
         </nav>
       </div>
 
-      <p className="mt-10 border-t border-border pt-6 font-mono text-[11px] text-muted-foreground/80">
+      <p className="mt-10 border-t border-border pt-6 font-mono text-[11px] text-muted-foreground">
         © {year} {siteConfig.name}
       </p>
     </footer>

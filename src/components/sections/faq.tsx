@@ -22,7 +22,7 @@ export function FAQ() {
           <p className="mt-6 max-w-md text-base leading-7 text-muted-foreground">
             {description}
           </p>
-          <p className="mt-8 hidden font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70 lg:block">
+          <p className="mt-8 hidden font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground lg:block">
             {String(siteConfig.faqs.length).padStart(2, "0")} entries
           </p>
         </div>

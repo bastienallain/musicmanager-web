@@ -11,10 +11,28 @@ import { Header } from "@/components/sections/header";
 import { Hero } from "@/components/sections/hero";
 import { Pricing } from "@/components/sections/pricing";
 import { SignalPath } from "@/components/sections/signal-path";
+import { siteConfig } from "@/lib/config";
+
+// Données structurées de l'app, sans prix ni date de sortie (rien n'est encore promis).
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: siteConfig.name,
+  description: siteConfig.description,
+  url: siteConfig.url,
+  applicationCategory: "MultimediaApplication",
+  operatingSystem: "macOS",
+};
 
 export default function Home() {
   return (
     <main className="relative overflow-x-clip">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Header />
       <Hero />
       <FeatureScroll />

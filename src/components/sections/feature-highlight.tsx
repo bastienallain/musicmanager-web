@@ -3,65 +3,69 @@
 import { MacWindow } from "@/components/mac-window";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRightIcon, CheckIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Highlight = (typeof siteConfig.featureHighlight)[number];
 type Spec = { label: string; value: string; unit: string };
 type Stat = { value: string; label: string };
 type TagFix = NonNullable<Highlight["tagFix"]>;
 
+const LED_COLOR = [
+  "bg-deck-a shadow-[0_0_8px_#4A8DFF]",
+  "bg-[#E8B04A] shadow-[0_0_8px_#E8B04A]",
+  "bg-deck-b shadow-[0_0_8px_#D08B6C]",
+];
+const SCREWS = ["left-2 top-2", "right-2 top-2", "left-2 bottom-2", "right-2 bottom-2"];
+const DB_TICKS = [0, -20, -40, -60, -80, -100, -120, -140, -160];
+const dbX = (db: number) => Math.round((8 + (-db / 160) * 284) * 10) / 10;
+const NOISE_X = dbX(-141);
+
 // Échelle en dB du panneau hi-fi : 0 à −160 dB, repère sur le bruit du rééchantillonneur.
-function NoiseFloorScale() {
-  const ticks = [0, -20, -40, -60, -80, -100, -120, -140, -160];
-  const x = (db: number) => 8 + ((-db) / 160) * 284;
-  return (
-    <svg viewBox="0 0 300 46" className="w-full" role="img" aria-label="Resampler noise at −141 dB on a 0 to −160 dB scale">
-      <rect x="8" y="10" width="284" height="6" rx="3" fill="#24282C" />
-      <defs>
-        <linearGradient id="nf-fill" x1="0" x2="1">
-          <stop offset="0" stopColor="#4A8DFF" stopOpacity="0.9" />
-          <stop offset="1" stopColor="#4A8DFF" stopOpacity="0.15" />
-        </linearGradient>
-      </defs>
-      <rect x="8" y="10" width={x(-141) - 8} height="6" rx="3" fill="url(#nf-fill)" />
-      <line x1={x(-141)} x2={x(-141)} y1="4" y2="22" stroke="#4A8DFF" strokeWidth="1.5" />
-      {ticks.map((t) => (
-        <g key={t}>
-          <line x1={x(t)} x2={x(t)} y1="20" y2={t % 40 === 0 ? 27 : 24} stroke="#8A94A0" strokeOpacity="0.5" />
-          {t % 40 === 0 && (
-            <text x={x(t)} y="40" textAnchor="middle" fontSize="8" fill="#8A94A0" fontFamily="var(--font-geist-mono), monospace">
-              {t === 0 ? "0" : `−${-t}`}
-            </text>
-          )}
-        </g>
-      ))}
-    </svg>
-  );
-}
+// Entièrement statique : rendue une seule fois au chargement du module.
+const NOISE_FLOOR_SCALE = (
+  <svg viewBox="0 0 300 46" className="w-full" role="img" aria-label="Resampler noise at −141 dB on a 0 to −160 dB scale">
+    <rect x="8" y="10" width="284" height="6" rx="3" fill="#24282C" />
+    <defs>
+      <linearGradient id="nf-fill" x1="0" x2="1">
+        <stop offset="0" stopColor="#4A8DFF" stopOpacity="0.9" />
+        <stop offset="1" stopColor="#4A8DFF" stopOpacity="0.15" />
+      </linearGradient>
+    </defs>
+    <rect x="8" y="10" width={NOISE_X - 8} height="6" rx="3" fill="url(#nf-fill)" />
+    <line x1={NOISE_X} x2={NOISE_X} y1="4" y2="22" stroke="#4A8DFF" strokeWidth="1.5" />
+    {DB_TICKS.map((t) => (
+      <g key={t}>
+        <line x1={dbX(t)} x2={dbX(t)} y1="20" y2={t % 40 === 0 ? 27 : 24} stroke="#8A94A0" strokeOpacity="0.5" />
+        {t % 40 === 0 && (
+          <text x={dbX(t)} y="40" textAnchor="middle" fontSize="8" fill="#8A94A0" className="font-mono">
+            {t === 0 ? "0" : `−${-t}`}
+          </text>
+        )}
+      </g>
+    ))}
+  </svg>
+);
 
 // Façade de DAC : témoins de mode et specs en chiffres.
 function SpecPanel({ specs, modes }: { specs: Spec[]; modes: string[] }) {
   const reduceMotion = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref);
   const [mode, setMode] = useState(0);
 
+  // Cycle des témoins, suspendu hors écran.
   useEffect(() => {
-    if (reduceMotion) return;
+    if (reduceMotion || !inView) return;
     const id = setInterval(() => setMode((m) => (m + 1) % modes.length), 2800);
     return () => clearInterval(id);
-  }, [modes.length, reduceMotion]);
-
-  const ledColor = [
-    "bg-deck-a shadow-[0_0_8px_#4A8DFF]",
-    "bg-[#E8B04A] shadow-[0_0_8px_#E8B04A]",
-    "bg-deck-b shadow-[0_0_8px_#D08B6C]",
-  ];
+  }, [modes.length, reduceMotion, inView]);
 
   return (
-    <div className="relative mt-8 rounded-xl border border-white/10 bg-gradient-to-b from-raised to-surface p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+    <div ref={ref} className="relative mt-8 rounded-xl border border-white/10 bg-gradient-to-b from-raised to-surface p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
       {/* vis de façade */}
-      {["left-2 top-2", "right-2 top-2", "left-2 bottom-2", "right-2 bottom-2"].map((p) => (
+      {SCREWS.map((p) => (
         <span key={p} aria-hidden className={cn("absolute size-1.5 rounded-full bg-white/10", p)} />
       ))}
 
@@ -73,11 +77,11 @@ function SpecPanel({ specs, modes }: { specs: Spec[]; modes: string[] }) {
               className={cn(
                 "size-1.5 rounded-full transition-all duration-500",
                 i === mode
-                  ? ledColor[i % ledColor.length]
+                  ? LED_COLOR[i % LED_COLOR.length]
                   : "bg-white/15"
               )}
             />
-            <span className={cn("transition-colors duration-500", i === mode ? "text-foreground" : "text-muted-foreground/60")}>
+            <span className={cn("transition-colors duration-500", i === mode ? "text-foreground" : "text-muted-foreground")}>
               {m}
             </span>
           </li>
@@ -97,7 +101,7 @@ function SpecPanel({ specs, modes }: { specs: Spec[]; modes: string[] }) {
       </dl>
 
       <div className="mt-4">
-        <NoiseFloorScale />
+        {NOISE_FLOOR_SCALE}
       </div>
     </div>
   );
@@ -137,14 +141,17 @@ function DeckStats({ stats }: { stats: Stat[] }) {
 // Carte avant / après : tags tirés d'un nom de fichier → tags MusicBrainz propres.
 function TagFixCard({ tagFix }: { tagFix: TagFix }) {
   const reduceMotion = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref);
   const [fixed, setFixed] = useState(false);
   const [auto, setAuto] = useState(true);
 
+  // Bascule automatique, suspendue hors écran et dès que l'utilisateur a cliqué.
   useEffect(() => {
-    if (reduceMotion || !auto) return;
+    if (reduceMotion || !auto || !inView) return;
     const id = setInterval(() => setFixed((f) => !f), 3200);
     return () => clearInterval(id);
-  }, [reduceMotion, auto]);
+  }, [reduceMotion, auto, inView]);
 
   const state = fixed ? tagFix.after : tagFix.before;
   const toggle = () => {
@@ -153,7 +160,7 @@ function TagFixCard({ tagFix }: { tagFix: TagFix }) {
   };
 
   return (
-    <div className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-surface">
+    <div ref={ref} className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-surface">
       <div className="flex items-center justify-between gap-3 border-b border-white/5 bg-raised/60 px-4 py-2.5">
         <span className="min-w-0 truncate font-mono text-[11px] text-muted-foreground">
           {tagFix.before.file}
@@ -170,7 +177,7 @@ function TagFixCard({ tagFix }: { tagFix: TagFix }) {
         </button>
       </div>
 
-      <dl className="divide-y divide-white/5 px-4" aria-live="polite">
+      <dl className="divide-y divide-white/5 px-4" aria-live={auto ? "off" : "polite"}>
         {state.fields.map((f, i) => (
           <div key={f.name} className="flex items-baseline gap-4 py-2.5">
             <dt className="w-14 shrink-0 text-xs text-muted-foreground">{f.name}</dt>
@@ -238,10 +245,10 @@ function HighlightRow({ feature }: { feature: Highlight }) {
       <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
         <motion.div
           className={cn("lg:col-span-5", textFirst ? "lg:order-1" : "lg:order-2")}
-          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-15% 0px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut" }}
         >
           <p
             className={cn(
@@ -269,10 +276,10 @@ function HighlightRow({ feature }: { feature: Highlight }) {
 
         <motion.div
           className={cn("lg:col-span-7", textFirst ? "lg:order-2" : "lg:order-1")}
-          initial={reduceMotion ? false : { opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10% 0px" }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.8, ease: "easeOut", delay: 0.1 }}
         >
           <MacWindow
             src={feature.imageSrc}
@@ -280,7 +287,7 @@ function HighlightRow({ feature }: { feature: Highlight }) {
             width={feature.imageWidth}
             height={feature.imageHeight}
             glow={isDj ? "b" : "a"}
-            sizes="(min-width: 1024px) 700px, 100vw"
+            sizes="(min-width: 1280px) 630px, (min-width: 1024px) 52vw, 100vw"
           />
         </motion.div>
       </div>

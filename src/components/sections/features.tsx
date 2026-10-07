@@ -73,7 +73,7 @@ export function Features() {
               <span className="flex size-10 items-center justify-center rounded-lg bg-surface text-muted-foreground ring-1 ring-white/[0.08] transition-colors duration-300 group-hover:text-deck-a group-hover:ring-deck-a/40">
                 {icon}
               </span>
-              <span className="font-mono text-[11px] tracking-[0.18em] text-muted-foreground/70">
+              <span className="font-mono text-[11px] tracking-[0.18em] text-muted-foreground">
                 {String(index + 1).padStart(2, "0")} / {total}
               </span>
             </div>
@@ -134,7 +134,7 @@ export function Features() {
                     alt={`${title} view`}
                     width={2560}
                     height={1720}
-                    sizes="380px"
+                    sizes="(min-width: 488px) 380px, 78vw"
                     className="block h-auto w-full"
                   />
                 </div>

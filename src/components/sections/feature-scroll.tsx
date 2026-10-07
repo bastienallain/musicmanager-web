@@ -2,12 +2,12 @@
 
 import { Section } from "@/components/section";
 import { MacWindow } from "@/components/mac-window";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import {
   motion,
   useMotionValueEvent,
-  useReducedMotion,
   useScroll,
   useSpring,
 } from "framer-motion";
@@ -17,11 +17,23 @@ import { useRef, useState } from "react";
 const steps = siteConfig.featureScroll;
 const pad = (n: number) => String(n).padStart(2, "0");
 
+// Graduations du rail : statiques, rendues une seule fois.
+const railTicks = Array.from({ length: 21 }, (_, i) => (
+  <span
+    key={i}
+    className={cn(
+      "absolute -left-1 h-px bg-white/15",
+      i % 10 === 0 ? "w-2.5" : "w-1.5"
+    )}
+    style={{ top: `${i * 5}%` }}
+  />
+));
+
 // Grand écran : scène collante pilotée par le scroll, la capture change à chaque étape.
 function StickyTour() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: trackRef,
@@ -57,8 +69,8 @@ function StickyTour() {
     >
       <div className="sticky top-0 flex h-screen items-center">
         <div className="grid w-full grid-cols-[minmax(0,5fr)_minmax(0,12fr)] items-center gap-12">
-          <ol className="relative pl-8">
-            {/* Rail gradué, comme une échelle de VU-mètre */}
+          <div className="relative pl-8">
+            {/* Rail gradué, comme une échelle de VU-mètre ; hors de la liste, qui n'admet que des li. */}
             <div
               aria-hidden
               className="absolute left-0 top-1 bottom-1 w-px bg-white/10"
@@ -67,65 +79,58 @@ function StickyTour() {
                 className="absolute inset-x-0 top-0 h-full origin-top bg-deck-a shadow-[0_0_12px_var(--color-deck-a)]"
                 style={{ scaleY: progress }}
               />
-              {Array.from({ length: 21 }).map((_, i) => (
-                <span
-                  key={i}
-                  className={cn(
-                    "absolute -left-1 h-px bg-white/15",
-                    i % 10 === 0 ? "w-2.5" : "w-1.5"
-                  )}
-                  style={{ top: `${i * 5}%` }}
-                />
-              ))}
+              {railTicks}
             </div>
 
-            {steps.map((step, i) => {
-              const isActive = i === active;
-              return (
-                <li key={step.title} className="py-5">
-                  <button
-                    type="button"
-                    onClick={() => goTo(i)}
-                    aria-current={isActive ? "step" : undefined}
-                    className="group block w-full rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <span
-                      className={cn(
-                        "font-mono text-xs tracking-widest transition-colors duration-300",
-                        isActive ? "text-deck-a" : "text-muted-foreground/60"
-                      )}
+            <ol>
+              {steps.map((step, i) => {
+                const isActive = i === active;
+                return (
+                  <li key={step.title} className="py-5">
+                    <button
+                      type="button"
+                      onClick={() => goTo(i)}
+                      aria-current={isActive ? "step" : undefined}
+                      className="group block w-full rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      {pad(i + 1)} / {pad(steps.length)}
-                    </span>
-                    <span
-                      className={cn(
-                        "mt-1 block text-2xl font-semibold tracking-tight transition-colors duration-300",
-                        isActive
-                          ? "text-foreground"
-                          : "text-muted-foreground/50 group-hover:text-muted-foreground"
-                      )}
-                    >
-                      {step.title}
-                    </span>
-                    <span
-                      className={cn(
-                        "grid transition-all duration-500 ease-out",
-                        isActive
-                          ? "grid-rows-[1fr] opacity-100"
-                          : "grid-rows-[0fr] opacity-0"
-                      )}
-                    >
-                      <span className="overflow-hidden">
-                        <span className="block pt-2 text-base leading-relaxed text-muted-foreground">
-                          {step.description}
+                      <span
+                        className={cn(
+                          "font-mono text-xs tracking-widest transition-colors duration-300",
+                          isActive ? "text-deck-a" : "text-muted-foreground"
+                        )}
+                      >
+                        {pad(i + 1)} / {pad(steps.length)}
+                      </span>
+                      <span
+                        className={cn(
+                          "mt-1 block text-2xl font-semibold tracking-tight transition-colors duration-300",
+                          isActive
+                            ? "text-foreground"
+                            : "text-muted-foreground group-hover:text-foreground"
+                        )}
+                      >
+                        {step.title}
+                      </span>
+                      <span
+                        className={cn(
+                          "grid transition-all duration-500 ease-out",
+                          isActive
+                            ? "grid-rows-[1fr] opacity-100"
+                            : "grid-rows-[0fr] opacity-0"
+                        )}
+                      >
+                        <span className="overflow-hidden">
+                          <span className="block pt-2 text-base leading-relaxed text-muted-foreground">
+                            {step.description}
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
 
           <div className="relative">
             <div
@@ -200,7 +205,7 @@ function StackedTour() {
             alt={step.imageAlt}
             width={step.width}
             height={step.height}
-            sizes="100vw"
+            sizes="(min-width: 640px) calc(100vw - 5rem), calc(100vw - 2rem)"
             glow={i === 2 ? "b" : "a"}
             className="mt-6"
           />

@@ -4,20 +4,23 @@ import { Section } from "@/components/section";
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
-import { motion, useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
+import type { CSSProperties } from "react";
+
+const SCREW_CORNERS = [
+  "left-2.5 top-2.5",
+  "right-2.5 top-2.5",
+  "left-2.5 bottom-2.5",
+  "right-2.5 bottom-2.5",
+];
 
 // Vis de façade aux quatre coins, comme sur un panneau de rack.
 function Screws() {
-  const corners = [
-    "left-2.5 top-2.5",
-    "right-2.5 top-2.5",
-    "left-2.5 bottom-2.5",
-    "right-2.5 bottom-2.5",
-  ];
   return (
     <>
-      {corners.map((pos) => (
+      {SCREW_CORNERS.map((pos) => (
         <span
           key={pos}
           aria-hidden
@@ -31,6 +34,14 @@ function Screws() {
   );
 }
 
+const SCALE_STYLE: CSSProperties = {
+  backgroundImage:
+    "repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 8px), repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 40px)",
+  backgroundSize: "100% 4px, 100% 8px",
+  backgroundPosition: "0 100%, 0 100%",
+  backgroundRepeat: "no-repeat",
+};
+
 // Règle graduée fine, en guise de séparateur.
 function Scale({ lit }: { lit: boolean }) {
   return (
@@ -40,19 +51,14 @@ function Scale({ lit }: { lit: boolean }) {
         "my-6 h-2 w-full",
         lit ? "text-deck-a/50" : "text-muted-foreground/25"
       )}
-      style={{
-        backgroundImage:
-          "repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 8px), repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 40px)",
-        backgroundSize: "100% 4px, 100% 8px",
-        backgroundPosition: "0 100%, 0 100%",
-        backgroundRepeat: "no-repeat",
-      }}
+      style={SCALE_STYLE}
     />
   );
 }
 
+
 export function Pricing() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
   const { title, subtitle, description } = siteConfig.pricingSection;
 
   return (
@@ -69,10 +75,14 @@ export function Pricing() {
           return (
             <motion.article
               key={plan.name}
-              initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5, delay: index * 0.08, ease: "easeOut" }}
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : { duration: 0.5, delay: index * 0.08, ease: "easeOut" }
+              }
               className={cn(
                 "relative flex flex-col rounded-xl border bg-surface p-6 pt-5 sm:p-7 sm:pt-6",
                 "bg-[linear-gradient(to_bottom,rgba(255,255,255,0.035),transparent_120px)]",

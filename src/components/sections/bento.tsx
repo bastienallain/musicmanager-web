@@ -3,11 +3,34 @@
 import { Section } from "@/components/section";
 import { palette, siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
 type BentoItem = (typeof siteConfig.bento)[number];
+type Loop = { stop: () => void };
+
+const round1 = (n: number) => Math.round(n * 10) / 10;
+
+// Lance des animations en boucle seulement quand l'élément est visible ; hors écran
+// ou avec le mouvement réduit, elles sont arrêtées et les valeurs gardent leur image fixe.
+function useVisibleLoop(ref: RefObject<Element | null>, start: () => Loop[]) {
+  const inView = useInView(ref);
+  const reduce = useReducedMotion();
+  useEffect(() => {
+    if (reduce || !inView) return;
+    const loops = start();
+    return () => loops.forEach((l) => l.stop());
+  }, [inView, reduce, start]);
+}
 
 export function BentoGrid() {
   const [waveform, streaming, dsd, harmonic] = siteConfig.bento;
@@ -52,10 +75,10 @@ function Card({
   const reduce = useReducedMotion();
   return (
     <motion.article
-      initial={reduce ? false : { opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay: (index % 2) * 0.08, ease: "easeOut" }}
+      transition={reduce ? { duration: 0 } : { duration: 0.6, delay: (index % 2) * 0.08, ease: "easeOut" }}
       className={cn(
         "relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-surface",
         className
@@ -112,7 +135,7 @@ function Chips({ chips, colors }: { chips: string[]; colors?: string[] }) {
 
 function Note({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-[11px] leading-relaxed text-muted-foreground/80">
+    <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">
       {children}
     </p>
   );
@@ -132,41 +155,42 @@ function seeded(seed: number) {
 }
 
 const BARS = 180;
+const BAR_W = 8;
+const WAVE_H = 160;
+const WAVE_C = WAVE_H / 2;
 
-function useWaveformBars() {
-  return useMemo(() => {
-    const rand = seeded(7);
-    return Array.from({ length: BARS }, (_, i) => {
-      const t = i / BARS;
-      const n = () => rand() * 0.18;
-      let low = 0.15,
-        mid = 0.25,
-        high = 0.15;
-      if (t < 0.12) {
-        mid = 0.22 + n();
-        high = 0.18 + n();
-        low = 0.08 + n() * 0.5;
-      } else if (t < 0.3) {
-        low = i % 8 < 2 ? 0.8 : 0.3 + n();
-        mid = 0.35 + t + n();
-        high = 0.25 + n();
-      } else if (t < 0.4) {
-        low = 0.1 + n() * 0.4;
-        mid = 0.45 + n();
-        high = 0.5 + n();
-      } else if (t < 0.82) {
-        low = i % 8 < 2 ? 0.95 : 0.35 + n();
-        mid = 0.55 + n();
-        high = i % 2 === 0 ? 0.45 + n() : 0.3 + n();
-      } else {
-        const fade = 1 - (t - 0.82) / 0.18;
-        low = (i % 8 < 2 ? 0.6 : 0.2) * fade + n() * 0.3;
-        mid = 0.45 * fade + n() * 0.5;
-        high = 0.3 * fade + n() * 0.4;
-      }
-      return { low: Math.min(low, 1), mid: Math.min(mid, 0.85), high: Math.min(high, 0.7) };
-    });
-  }, []);
+function makeWaveformBars() {
+  const rand = seeded(7);
+  return Array.from({ length: BARS }, (_, i) => {
+    const t = i / BARS;
+    const n = () => rand() * 0.18;
+    let low = 0.15,
+      mid = 0.25,
+      high = 0.15;
+    if (t < 0.12) {
+      mid = 0.22 + n();
+      high = 0.18 + n();
+      low = 0.08 + n() * 0.5;
+    } else if (t < 0.3) {
+      low = i % 8 < 2 ? 0.8 : 0.3 + n();
+      mid = 0.35 + t + n();
+      high = 0.25 + n();
+    } else if (t < 0.4) {
+      low = 0.1 + n() * 0.4;
+      mid = 0.45 + n();
+      high = 0.5 + n();
+    } else if (t < 0.82) {
+      low = i % 8 < 2 ? 0.95 : 0.35 + n();
+      mid = 0.55 + n();
+      high = i % 2 === 0 ? 0.45 + n() : 0.3 + n();
+    } else {
+      const fade = 1 - (t - 0.82) / 0.18;
+      low = (i % 8 < 2 ? 0.6 : 0.2) * fade + n() * 0.3;
+      mid = 0.45 * fade + n() * 0.5;
+      high = 0.3 * fade + n() * 0.4;
+    }
+    return { low: Math.min(low, 1), mid: Math.min(mid, 0.85), high: Math.min(high, 0.7) };
+  });
 }
 
 // Couleur d'une barre : teinte interpolée rouge → vert → bleu selon l'énergie de chaque bande, comme dans l'app.
@@ -174,53 +198,59 @@ function barColor(weights: number[], light: number) {
   const [low, mid, high] = weights;
   const sum = low + mid + high || 1;
   const hue = (mid * 128 + high * 214) / sum;
-  return `hsl(${hue.toFixed(1)} 78% ${light}%)`;
+  return `hsl(${Math.round(hue)} 78% ${light}%)`;
 }
 
-function WaveformSvg({ bars }: { bars: ReturnType<typeof useWaveformBars> }) {
-  const w = 8;
-  const h = 160;
-  const c = h / 2;
-  return (
-    <svg
-      viewBox={`0 0 ${BARS * w} ${h}`}
-      preserveAspectRatio="none"
-      className="absolute inset-0 h-full w-full"
-      aria-hidden
-    >
-      {bars.map((b, i) => {
-        // Les graves dominent la couleur sur les temps forts, comme une grosse caisse.
-        const weights = [b.low ** 4 * 8, b.mid ** 2, b.high ** 2 * 0.8];
-        const amp = Math.max(b.low, b.mid * 0.9, b.high * 0.8);
-        const core = amp * 0.55;
-        return (
-          <g key={i}>
-            <rect
-              x={i * w}
-              y={(c - amp * c).toFixed(2)}
-              width={w - 1.5}
-              height={(amp * h).toFixed(2)}
-              fill={barColor(weights, 50)}
-              opacity={0.8}
-            />
-            <rect
-              x={i * w}
-              y={(c - core * c).toFixed(2)}
-              width={w - 1.5}
-              height={(core * h).toFixed(2)}
-              fill={barColor(weights, 72)}
-            />
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
+// SVG statique (360 rectangles), rendu deux fois : on le construit une seule fois.
+const WAVEFORM_SVG = (
+  <svg
+    viewBox={`0 0 ${BARS * BAR_W} ${WAVE_H}`}
+    preserveAspectRatio="none"
+    className="absolute inset-0 h-full w-full"
+    aria-hidden
+  >
+    {makeWaveformBars().map((b, i) => {
+      // Les graves dominent la couleur sur les temps forts, comme une grosse caisse.
+      const weights = [b.low ** 4 * 8, b.mid ** 2, b.high ** 2 * 0.8];
+      const amp = Math.max(b.low, b.mid * 0.9, b.high * 0.8);
+      const core = amp * 0.55;
+      return (
+        <g key={i}>
+          <rect
+            x={i * BAR_W}
+            y={round1(WAVE_C - amp * WAVE_C)}
+            width={BAR_W - 1.5}
+            height={round1(amp * WAVE_H)}
+            fill={barColor(weights, 50)}
+            opacity={0.8}
+          />
+          <rect
+            x={i * BAR_W}
+            y={round1(WAVE_C - core * WAVE_C)}
+            width={BAR_W - 1.5}
+            height={round1(core * WAVE_H)}
+            fill={barColor(weights, 72)}
+          />
+        </g>
+      );
+    })}
+  </svg>
+);
 
 function WaveformCard({ item }: { item: BentoItem }) {
-  const bars = useWaveformBars();
-  const reduce = useReducedMotion();
-  const loop = { duration: 16, ease: "linear" as const, repeat: Infinity };
+  const ref = useRef<HTMLDivElement>(null);
+  // Position de la tête de lecture (0 → 1) ; 38 % en image fixe.
+  const progress = useMotionValue(0.38);
+  const clipPath = useTransform(progress, (v) => `inset(0% ${round1((1 - v) * 100)}% 0% 0%)`);
+  const headX = useTransform(progress, (v) => `${round1(v * 100)}%`);
+
+  useVisibleLoop(
+    ref,
+    useCallback(
+      () => [animate(progress, [0, 1], { duration: 16, ease: "linear", repeat: Infinity })],
+      [progress]
+    )
+  );
 
   return (
     <div className="grid gap-6 p-5 sm:p-7 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:items-center">
@@ -229,31 +259,20 @@ function WaveformCard({ item }: { item: BentoItem }) {
         <Chips chips={item.chips} colors={[palette.low, palette.mid, palette.high]} />
       </div>
 
-      <div className="relative h-36 overflow-hidden rounded-lg bg-background ring-1 ring-white/[0.06] sm:h-44">
+      <div
+        ref={ref}
+        className="relative h-36 overflow-hidden rounded-lg bg-background ring-1 ring-white/[0.06] sm:h-44"
+      >
         {/* Partie non lue, atténuée. */}
-        <div className="absolute inset-0 opacity-35 saturate-50">
-          <WaveformSvg bars={bars} />
-        </div>
+        <div className="absolute inset-0 opacity-35 saturate-50">{WAVEFORM_SVG}</div>
         {/* Partie lue, révélée par la tête de lecture. */}
-        <motion.div
-          className="absolute inset-0"
-          initial={{ clipPath: "inset(0% 62% 0% 0%)" }}
-          animate={
-            reduce
-              ? { clipPath: "inset(0% 62% 0% 0%)" }
-              : { clipPath: ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"] }
-          }
-          transition={reduce ? undefined : loop}
-        >
-          <WaveformSvg bars={bars} />
+        <motion.div className="absolute inset-0" style={{ clipPath }}>
+          {WAVEFORM_SVG}
         </motion.div>
-        <motion.div
-          aria-hidden
-          className="absolute inset-y-0 w-px bg-foreground shadow-[0_0_8px_rgba(230,233,235,0.8)]"
-          initial={{ left: "38%" }}
-          animate={reduce ? { left: "38%" } : { left: ["0%", "100%"] }}
-          transition={reduce ? undefined : loop}
-        />
+        {/* La tête de lecture glisse en transform (pas de recalcul de mise en page). */}
+        <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ x: headX }}>
+          <div className="absolute inset-y-0 left-0 w-px bg-foreground shadow-[0_0_8px_rgba(230,233,235,0.8)]" />
+        </motion.div>
         <div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-white/10" />
       </div>
 
@@ -264,7 +283,7 @@ function WaveformCard({ item }: { item: BentoItem }) {
             alt={item.imageAlt}
             width={2560}
             height={450}
-            sizes="(min-width: 1024px) 960px, 100vw"
+            sizes="(min-width: 1024px) 920px, 100vw"
             className="block h-auto w-full"
           />
         </div>
@@ -280,11 +299,42 @@ function WaveformCard({ item }: { item: BentoItem }) {
 /* 02 · Streaming DLNA / OpenHome                                      */
 /* ------------------------------------------------------------------ */
 
+const PACKETS = [0, 1, 2, 3];
+const PACKET_CYCLE = 2.4; // secondes pour traverser la liaison
+const PACKET_GAP = 0.6; // décalage entre deux paquets
+const PACKET_STILL = 2.1; // horloge de l'image fixe : quatre paquets répartis sur la liaison
+
+// Un paquet suit l'horloge commune avec son propre décalage de phase.
+function Packet({ clock, index }: { clock: MotionValue<number>; index: number }) {
+  const phase = useTransform(clock, (c) => {
+    const p = ((c - index * PACKET_GAP) / PACKET_CYCLE) % 1;
+    return p < 0 ? p + 1 : p;
+  });
+  const x = useTransform(phase, (p) => 104 + p * 122);
+  const opacity = useTransform(phase, [0, 1 / 3, 2 / 3, 1], [0, 1, 1, 0]);
+  return <motion.rect y="53" width="10" height="6" rx="1.5" fill={palette.deckA} style={{ x, opacity }} />;
+}
+
 function StreamDiagram() {
-  const reduce = useReducedMotion();
-  const packets = [0, 1, 2, 3];
+  const ref = useRef<SVGSVGElement>(null);
+  const clock = useMotionValue(PACKET_STILL);
+
+  useVisibleLoop(
+    ref,
+    useCallback(
+      () => [
+        animate(clock, [PACKET_STILL, PACKET_STILL + PACKET_CYCLE], {
+          duration: PACKET_CYCLE,
+          ease: "linear",
+          repeat: Infinity,
+        }),
+      ],
+      [clock]
+    )
+  );
+
   return (
-    <svg viewBox="0 0 360 120" className="h-auto w-full" role="img" aria-label="Mac sending a file to a network streamer">
+    <svg ref={ref} viewBox="0 0 360 120" className="h-auto w-full" role="img" aria-label="Mac sending a file to a network streamer">
       {/* Mac portable */}
       <rect x="12" y="28" width="78" height="50" rx="4" fill={palette.raised} stroke="rgba(255,255,255,0.12)" />
       <rect x="18" y="34" width="66" height="38" rx="1.5" fill={palette.bg} />
@@ -299,18 +349,8 @@ function StreamDiagram() {
 
       {/* Liaison réseau */}
       <line x1="104" y1="56" x2="236" y2="56" stroke="rgba(255,255,255,0.14)" strokeDasharray="2 4" />
-      {packets.map((p) => (
-        <motion.rect
-          key={p}
-          y="53"
-          width="10"
-          height="6"
-          rx="1.5"
-          fill={palette.deckA}
-          initial={{ x: 104 + p * 33, opacity: reduce ? 0.8 : 0 }}
-          animate={reduce ? undefined : { x: [104, 226], opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 2.4, delay: p * 0.6, repeat: Infinity, ease: "linear" }}
-        />
+      {PACKETS.map((p) => (
+        <Packet key={p} clock={clock} index={p} />
       ))}
       <text x="170" y="44" textAnchor="middle" className="font-mono" fontSize="8.5" fill={palette.textMuted} letterSpacing="1">
         FILE · AS IS
@@ -347,7 +387,7 @@ function StreamingCard({ item }: { item: BentoItem }) {
             src={item.imageSrc}
             alt={item.imageAlt}
             fill
-            sizes="(min-width: 768px) 480px, 100vw"
+            sizes="(min-width: 1024px) 430px, (min-width: 768px) 50vw, 100vw"
             className="object-cover"
             style={{ objectPosition: "0% 90%" }}
           />
@@ -367,50 +407,64 @@ function StreamingCard({ item }: { item: BentoItem }) {
 const PDM_PER_PERIOD = 48;
 const PDM_STEP = 4; // largeur d'un échantillon : une période = 192 unités, deux périodes visibles
 
-function usePdm() {
-  return useMemo(() => {
-    // Modulateur sigma-delta du premier ordre sur une sinusoïde ; on jette la première période (régime transitoire).
-    const total = PDM_PER_PERIOD * 4;
-    let acc = 0;
-    let prev = 0;
-    const bits: number[] = [];
-    for (let i = 0; i < total; i++) {
-      const x = 0.82 * Math.sin((2 * Math.PI * i) / PDM_PER_PERIOD);
-      acc += x - prev;
-      const y = acc >= 0 ? 1 : -1;
-      prev = y;
-      bits.push(y > 0 ? 1 : 0);
-    }
-    return bits.slice(PDM_PER_PERIOD);
-  }, []);
+// Modulateur sigma-delta du premier ordre sur une sinusoïde ; on jette la première période (régime transitoire).
+function makePdm() {
+  const total = PDM_PER_PERIOD * 4;
+  let acc = 0;
+  let prev = 0;
+  const bits: number[] = [];
+  for (let i = 0; i < total; i++) {
+    const x = 0.82 * Math.sin((2 * Math.PI * i) / PDM_PER_PERIOD);
+    acc += x - prev;
+    const y = acc >= 0 ? 1 : -1;
+    prev = y;
+    bits.push(y > 0 ? 1 : 0);
+  }
+  return bits.slice(PDM_PER_PERIOD);
 }
 
+const PDM_PERIOD = PDM_PER_PERIOD * PDM_STEP;
+const PDM_SINE = Array.from({ length: PDM_PER_PERIOD * 3 + 1 }, (_, i) => {
+  const x = i * PDM_STEP;
+  const y = 32 - 22 * Math.sin((2 * Math.PI * i) / PDM_PER_PERIOD);
+  return `${i === 0 ? "M" : "L"}${x} ${y.toFixed(1)}`;
+}).join(" ");
+
+// Signal statique (sinusoïde + 144 impulsions) : seul le groupe qui le contient défile.
+const PDM_SIGNAL = (
+  <>
+    <path d={PDM_SINE} fill="none" stroke={palette.textMuted} strokeWidth="1.5" opacity="0.7" />
+    {makePdm().map((b, i) =>
+      b ? (
+        <rect key={i} x={round1(i * PDM_STEP + 0.6)} y={70} width={PDM_STEP - 1.2} height={40} rx={0.6} fill={palette.deckA} />
+      ) : (
+        <rect key={i} x={round1(i * PDM_STEP + 0.6)} y={108} width={PDM_STEP - 1.2} height={2} fill={palette.textMuted} opacity={0.5} />
+      )
+    )}
+  </>
+);
+
 function DsdVisual() {
-  const bits = usePdm();
-  const reduce = useReducedMotion();
-  const period = PDM_PER_PERIOD * PDM_STEP;
-  const width = period * 2;
-  const sine = Array.from({ length: PDM_PER_PERIOD * 3 + 1 }, (_, i) => {
-    const x = i * PDM_STEP;
-    const y = 32 - 22 * Math.sin((2 * Math.PI * i) / PDM_PER_PERIOD);
-    return `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`;
-  }).join(" ");
+  const ref = useRef<SVGSVGElement>(null);
+  const x = useMotionValue(0);
+
+  useVisibleLoop(
+    ref,
+    useCallback(
+      () => [animate(x, [0, -PDM_PERIOD], { duration: 7, ease: "linear", repeat: Infinity })],
+      [x]
+    )
+  );
 
   return (
-    <svg viewBox={`0 0 ${width} 132`} className="h-auto w-full" role="img" aria-label="An analog sine wave above its 1-bit pulse-density stream">
-      <motion.g
-        animate={reduce ? undefined : { x: [0, -period] }}
-        transition={{ duration: 7, ease: "linear", repeat: Infinity }}
-      >
-        <path d={sine} fill="none" stroke={palette.textMuted} strokeWidth="1.5" opacity="0.7" />
-        {bits.map((b, i) =>
-          b ? (
-            <rect key={i} x={i * PDM_STEP + 0.6} y={70} width={PDM_STEP - 1.2} height={40} rx={0.6} fill={palette.deckA} />
-          ) : (
-            <rect key={i} x={i * PDM_STEP + 0.6} y={108} width={PDM_STEP - 1.2} height={2} fill={palette.textMuted} opacity={0.5} />
-          )
-        )}
-      </motion.g>
+    <svg
+      ref={ref}
+      viewBox={`0 0 ${PDM_PERIOD * 2} 132`}
+      className="h-auto w-full"
+      role="img"
+      aria-label="An analog sine wave above its 1-bit pulse-density stream"
+    >
+      <motion.g style={{ x }}>{PDM_SIGNAL}</motion.g>
       <text x="0" y="128" className="font-mono" fontSize="9" fill={palette.textMuted} letterSpacing="1.5">
         1-BIT · PULSE DENSITY
       </text>
@@ -486,10 +540,32 @@ const hue = (n: number) => (170 - (n - 1) * 30 + 360) % 360;
 function sector(cx: number, cy: number, r0: number, r1: number, a0: number, a1: number) {
   const p = (r: number, a: number) => {
     const rad = (a * Math.PI) / 180;
-    return `${(cx + r * Math.cos(rad)).toFixed(2)} ${(cy + r * Math.sin(rad)).toFixed(2)}`;
+    return `${round1(cx + r * Math.cos(rad))} ${round1(cy + r * Math.sin(rad))}`;
   };
   return `M${p(r1, a0)} A${r1} ${r1} 0 0 1 ${p(r1, a1)} L${p(r0, a1)} A${r0} ${r0} 0 0 0 ${p(r0, a0)} Z`;
 }
+
+const WHEEL_C = 160;
+const RINGS = { A: [104, 154], B: [58, 104] } as const;
+
+// Géométrie des 24 secteurs, indépendante de la sélection : calculée une fois.
+const SEGMENTS = (["A", "B"] as const).flatMap((ring) =>
+  Array.from({ length: 12 }, (_, i) => {
+    const key: Camelot = { n: i + 1, ring };
+    const mid = -90 + i * 30;
+    const [r0, r1] = RINGS[ring];
+    const rad = (mid * Math.PI) / 180;
+    const lr = (r0 + r1) / 2;
+    return {
+      key,
+      id: code(key),
+      d: sector(WHEEL_C, WHEEL_C, r0, r1, mid - 15, mid + 15),
+      labelX: round1(WHEEL_C + lr * Math.cos(rad)),
+      labelY: round1(WHEEL_C + lr * Math.sin(rad)),
+      hue: hue(key.n),
+    };
+  })
+);
 
 function CamelotWheel({
   selected,
@@ -500,75 +576,74 @@ function CamelotWheel({
 }) {
   const [hover, setHover] = useState<Camelot | null>(null);
   const active = hover ?? selected;
+  const activeId = code(active);
+  const selectedId = code(selected);
   const matches = new Set(compatible(active).map((c) => code(c.key)));
-  const C = 160;
-  const rings = { A: [104, 154], B: [58, 104] } as const;
+  const C = WHEEL_C;
 
   return (
-    <svg viewBox="0 0 320 320" className="mx-auto h-auto w-full max-w-[340px]" onMouseLeave={() => setHover(null)}>
-      {(["A", "B"] as const).flatMap((ring) =>
-        Array.from({ length: 12 }, (_, i) => {
-          const k: Camelot = { n: i + 1, ring };
-          const id = code(k);
-          const mid = -90 + i * 30;
-          const [r0, r1] = rings[ring];
-          const isActive = id === code(active);
-          const isMatch = matches.has(id);
-          const h = hue(k.n);
-          const fill = isActive
-            ? palette.deckA
-            : `hsl(${h} ${ring === "A" ? 32 : 26}% ${isMatch ? (ring === "A" ? 40 : 34) : ring === "A" ? 24 : 19}%)`;
-          const rad = (mid * Math.PI) / 180;
-          const lr = (r0 + r1) / 2;
-          return (
-            <g
-              key={id}
-              role="button"
-              tabIndex={0}
-              aria-pressed={id === code(selected)}
-              aria-label={`${id}, ${KEYS[id]}`}
-              className="cursor-pointer outline-none [&:focus-visible>path]:stroke-foreground"
-              onMouseEnter={() => setHover(k)}
-              onFocus={() => setHover(k)}
-              onBlur={() => setHover(null)}
-              onClick={() => onSelect(k)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  onSelect(k);
-                }
-              }}
+    <svg
+      viewBox="0 0 320 320"
+      className="mx-auto h-auto w-full max-w-[340px]"
+      role="group"
+      aria-label="Camelot wheel"
+      onMouseLeave={() => setHover(null)}
+    >
+      {SEGMENTS.map(({ key: k, id, d, labelX, labelY, hue: h }) => {
+        const ring = k.ring;
+        const isActive = id === activeId;
+        const isMatch = matches.has(id);
+        const fill = isActive
+          ? palette.deckA
+          : `hsl(${h} ${ring === "A" ? 32 : 26}% ${isMatch ? (ring === "A" ? 40 : 34) : ring === "A" ? 24 : 19}%)`;
+        return (
+          <g
+            key={id}
+            role="button"
+            tabIndex={0}
+            aria-pressed={id === selectedId}
+            aria-label={`${id}, ${KEYS[id]}`}
+            className="cursor-pointer outline-none [&:focus-visible>path]:stroke-foreground"
+            onMouseEnter={() => setHover(k)}
+            onFocus={() => setHover(k)}
+            onBlur={() => setHover(null)}
+            onClick={() => onSelect(k)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelect(k);
+              }
+            }}
+          >
+            <path
+              d={d}
+              fill={fill}
+              stroke={isMatch ? palette.deckA : palette.bg}
+              strokeWidth={isMatch && !isActive ? 1.5 : 2}
+              opacity={isMatch ? 1 : 0.55}
+              style={{ transition: "fill 200ms, opacity 200ms" }}
+            />
+            <text
+              x={labelX}
+              y={labelY}
+              textAnchor="middle"
+              dominantBaseline="central"
+              className="pointer-events-none select-none font-mono"
+              fontSize={ring === "A" ? 12 : 10.5}
+              fontWeight={isActive ? 700 : 500}
+              fill={isActive ? palette.bg : isMatch ? palette.text : palette.textMuted}
             >
-              <path
-                d={sector(C, C, r0, r1, mid - 15, mid + 15)}
-                fill={fill}
-                stroke={isMatch ? palette.deckA : palette.bg}
-                strokeWidth={isMatch && !isActive ? 1.5 : 2}
-                opacity={isMatch ? 1 : 0.55}
-                style={{ transition: "fill 200ms, opacity 200ms" }}
-              />
-              <text
-                x={(C + lr * Math.cos(rad)).toFixed(2)}
-                y={(C + lr * Math.sin(rad)).toFixed(2)}
-                textAnchor="middle"
-                dominantBaseline="central"
-                className="pointer-events-none select-none font-mono"
-                fontSize={ring === "A" ? 12 : 10.5}
-                fontWeight={isActive ? 700 : 500}
-                fill={isActive ? palette.bg : isMatch ? palette.text : palette.textMuted}
-              >
-                {id}
-              </text>
-            </g>
-          );
-        })
-      )}
+              {id}
+            </text>
+          </g>
+        );
+      })}
       <circle cx={C} cy={C} r={54} fill={palette.bg} stroke="rgba(255,255,255,0.08)" />
       <text x={C} y={C - 8} textAnchor="middle" className="font-mono" fontSize="22" fontWeight="600" fill={palette.text}>
-        {code(active)}
+        {activeId}
       </text>
       <text x={C} y={C + 14} textAnchor="middle" fontSize="10" fill={palette.textMuted}>
-        {KEYS[code(active)]}
+        {KEYS[activeId]}
       </text>
     </svg>
   );
@@ -606,16 +681,15 @@ function HarmonicCard({ item }: { item: BentoItem }) {
           </ul>
         </div>
         <Note>{item.note}</Note>
-        {/* Zoom sur la roue de l'app : zone x 470–1230, y 660–1230 de la capture 2560×1720. */}
-        <div className="relative aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
+        {/* Roue de l'app recadrée dans la capture 2560×1720 (zone x 470–1230, y 660–1230). */}
+        <div className="overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
           <Image
-            src={item.imageSrc}
+            src="/screens/harmonic-wheel.png"
             alt={item.imageAlt}
-            width={2560}
-            height={1720}
-            sizes="(min-width: 1024px) 1600px, 340vw"
-            className="absolute h-auto max-w-none"
-            style={{ width: "336.8%", left: "-61.8%", top: "-115.8%" }}
+            width={760}
+            height={570}
+            sizes="(min-width: 1024px) 484px, (min-width: 768px) 55vw, 100vw"
+            className="block h-auto w-full"
           />
         </div>
       </div>

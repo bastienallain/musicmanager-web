@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["geist"],
+  // Toutes les images sont locales (public/screens) : pas d'hôte distant à autoriser.
   images: {
-    remotePatterns: [{ hostname: "localhost" }, { hostname: "randomuser.me" }],
+    formats: ["image/avif", "image/webp"],
   },
 };
 
