@@ -6,6 +6,8 @@ import djMixerRelay from "@/assets/screens/dj-mixer-relay.webp";
 import favorites from "@/assets/screens/favorites.webp";
 import history from "@/assets/screens/history.webp";
 import libraryPlaying from "@/assets/screens/library-playing.webp";
+// Ancien thème : reste apparié au DJ Mixer tant que sa maquette n'existe pas.
+import relayLibrary from "@/assets/screens/relay-library.webp";
 import player from "@/assets/screens/player.webp";
 import smartPlaylist from "@/assets/screens/smart-playlist.webp";
 import stats from "@/assets/screens/stats.webp";
@@ -219,7 +221,7 @@ export const siteConfig = {
     toggle: { listen: "Listen", mix: "Mix" },
     listen: {
       label: "Library",
-      image: libraryPlaying,
+      image: relayLibrary,
       imageAlt: "Library view with Nuit Blanche by Léa Moreau in the player",
     },
     mix: {
@@ -453,7 +455,7 @@ export const siteConfig = {
       content:
         "The Camelot wheel suggests the tracks that fit the one you're playing.",
       imageSrc: harmonicWheel,
-      imageAlt: "Harmonic Mix view with the Camelot wheel",
+      imageAlt: "Harmonic Mix view with the Camelot wheel and the tracks that fit the one playing",
       fullWidth: true,
       chips: [],
       note: "Pick a key: same number, one step either way, or its relative major / minor.",
