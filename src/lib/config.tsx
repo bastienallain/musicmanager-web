@@ -72,7 +72,7 @@ export const siteConfig = {
   tagline: "Your music, exactly as it was recorded.",
   description:
     "The music library for DJs and audiophiles on Mac: bit-perfect sound, a clean collection and a DJ mixer, in one app.",
-  cta: "Notify me at launch",
+  cta: "Join the waitlist",
   // Sur Vercel, retombe sur le domaine de production si NEXT_PUBLIC_APP_URL n'est pas défini.
   url:
     process.env.NEXT_PUBLIC_APP_URL ||
@@ -99,14 +99,14 @@ export const siteConfig = {
     { href: "#pricing", label: "Pricing" },
     { href: "#faq", label: "FAQ" },
   ],
-  // macOS au lancement ; Windows et Linux annoncés, sans date.
+  // Rien n'est sorti : macOS d'abord, puis Windows et Linux, sans date.
   platforms: [
-    { name: "macOS", detail: "Apple Silicon", status: "available" as const },
+    { name: "macOS", detail: "Apple Silicon · first", status: "first" as const },
     { name: "Windows", detail: "Coming soon", status: "soon" as const },
     { name: "Linux", detail: "Coming soon", status: "soon" as const },
   ],
   hero: {
-    eyebrow: "macOS first · Windows & Linux coming soon",
+    eyebrow: "Coming soon · Mac first, then Windows & Linux",
     title: "Your music, exactly as it was recorded.",
     subtitle:
       "Library, bit-perfect playback and a two-deck DJ mixer in one app, built for the Mac first. From 16-bit FLAC to 24-bit / 384 kHz, sent to your DAC untouched.",
@@ -264,7 +264,7 @@ export const siteConfig = {
     {
       name: "Library",
       description:
-        "50,000 tracks open in about 100 ms. Renamed or moved files keep their favorites, ratings, hot cues and playlists, and changes made while the app was closed are picked up at launch.",
+        "50,000 tracks open in about 100 ms. Renamed or moved files keep their favorites, ratings, hot cues and playlists, and changes made while the app was closed are picked up when it opens.",
       icon: <LibraryIcon className="h-6 w-6" />,
     },
   ],
@@ -287,7 +287,7 @@ export const siteConfig = {
     { icon: "shuffle", name: "Shuffle & repeat", detail: "Shuffle plays the whole list once before repeating. Repeat the list or a single track." },
     { icon: "gallery", name: "Cover gallery", detail: "Artwork in perspective above the track list. It slides to the track that's playing." },
     { icon: "greyed", name: "Greyed, not hidden", detail: "Missing files stay in the list with their data, greyed. Low-quality tracks still play, flagged in amber, and can be hidden in Settings." },
-    { icon: "watch", name: "Folder watching", detail: "Changes made while the app was closed are caught up at launch. Unplugging a drive never empties your library." },
+    { icon: "watch", name: "Folder watching", detail: "Changes made while the app was closed are caught up when the app opens. Unplugging a drive never empties your library." },
     { icon: "playlists", name: "Playlists in the sidebar", detail: "Playlists and smart playlists one click away, under Explorer." },
     { icon: "exclusive", name: "Exclusive mode (macOS)", detail: "On external DACs, no other app mixes into the sound." },
     { icon: "device", name: "Per-device profiles", detail: "Mac speakers, HDMI, USB DAC or Bluetooth, each remembered." },
@@ -506,7 +506,7 @@ export const siteConfig = {
     description:
       "Try everything for free, then keep it with a one-time license. No subscription.",
   },
-  pricingNote: "Prices are indicative until launch.",
+  pricingNote: "Prices are indicative and not final yet.",
   pricing: [
     {
       name: "Trial",
@@ -538,7 +538,7 @@ export const siteConfig = {
         "Free updates for 1.x",
       ],
       description: "Pay once. Your library stays yours.",
-      buttonText: "Notify me at launch",
+      buttonText: "Join the waitlist",
       isPopular: true,
     },
     {
@@ -549,8 +549,8 @@ export const siteConfig = {
       yearlyPrice: "€39",
       features: [
         "Everything in Personal",
-        "Waitlist-only launch price",
-        "Early builds before release",
+        "Waitlist-only price",
+        "Early builds before anyone else",
         "Your name in the credits",
       ],
       description: "For the first people on the waitlist.",
@@ -662,8 +662,9 @@ export const siteConfig = {
       question: "Which systems does it run on?",
       answer: (
         <span>
-          macOS on Apple Silicon at launch. Windows and Linux versions are on
-          the way: join the waitlist to hear when they’re ready.
+          None yet: the app isn’t out. The Mac version (Apple Silicon) comes
+          first, then Windows and Linux. Join the waitlist to hear when each
+          one is ready.
         </span>
       ),
     },
@@ -676,8 +677,8 @@ export const siteConfig = {
     inputLabel: "Email address",
     invalid: "That address doesn't look complete.",
     success: "You're on the list.",
-    successDetail: "One email at launch. Nothing else.",
-    fineprint: "Used only to tell you about the launch. Never shared.",
+    successDetail: "One email when it's out. Nothing else.",
+    fineprint: "Used only to tell you when it's out. Never shared.",
     platformsLabel: "Tell me when it's on…",
     platforms: [
       { id: "macos", label: "macOS" },
@@ -686,7 +687,7 @@ export const siteConfig = {
     ],
     noPlatform: "Pick at least one platform.",
   },
-  footerPlatform: "macOS · Windows & Linux coming soon",
+  footerPlatform: "Coming soon · macOS first, then Windows & Linux",
   footer: [
     {
       id: 1,

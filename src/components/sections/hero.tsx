@@ -98,13 +98,13 @@ export function Hero() {
             className="motion-safe:animate-fade-up [animation-delay:320ms] mt-8 flex flex-wrap items-center justify-center gap-2"
           >
             {siteConfig.platforms.map((p) => {
-              const available = p.status === "available";
+              const first = p.status === "first";
               return (
                 <li
                   key={p.name}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-md border px-2.5 py-1 font-mono text-[11px]",
-                    available
+                    first
                       ? "border-deck-a/35 bg-deck-a/[0.07] text-foreground"
                       : "border-dashed border-white/10 text-muted-foreground"
                   )}
@@ -113,13 +113,13 @@ export function Hero() {
                     aria-hidden
                     className={cn(
                       "size-1.5 rounded-full",
-                      available ? "bg-deck-a" : "border border-white/25"
+                      first ? "bg-deck-a" : "border border-white/25"
                     )}
                   />
-                  <span className={available ? "font-semibold" : undefined}>
+                  <span className={first ? "font-semibold" : undefined}>
                     {p.name}
                   </span>
-                  <span className={available ? "text-deck-a" : undefined}>
+                  <span className={first ? "text-deck-a" : undefined}>
                     {p.detail}
                   </span>
                 </li>

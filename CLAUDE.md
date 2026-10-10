@@ -37,8 +37,8 @@ Il n'y a pas de tests. Flow Git : branche `dev`, branches `feature/…` / `fix/�
 ## Règles de contenu (résumé de `CONTENU-SITE.md`)
 
 - Site en **anglais** (décision du 3 octobre 2026, remplace « français d'abord »). Ton précis et sobre, sans superlatifs marketing.
-- **macOS (Apple Silicon) au lancement ; Windows et Linux annoncés « coming soon »**, sans date ni fonctionnalité promise (`siteConfig.platforms`). Ne jamais promettre iPhone, la lecture de fichiers DSD (le moteur existe mais les .dsf/.dff n'entrent pas encore dans la bibliothèque), les touches média, une compatibilité DLNA par marque, le 32 bits bit-perfect (24 bits effectifs), Opus/WMA, les contrôleurs DJ matériels ou une date de sortie.
+- **Rien n'est sorti : macOS (Apple Silicon) d'abord, puis Windows et Linux, tous « coming soon »**, sans date ni fonctionnalité promise (`siteConfig.platforms`). Ne jamais promettre iPhone, la lecture de fichiers DSD (le moteur existe mais les .dsf/.dff n'entrent pas encore dans la bibliothèque), les touches média, une compatibilité DLNA par marque, le 32 bits bit-perfect (24 bits effectifs), Opus/WMA, les contrôleurs DJ matériels ou une date de sortie.
 - **Pricing** : section affichée à la demande de l'utilisateur, avec des montants **indicatifs** (brouillon, à valider). **Testimonials** : aucun témoignage inventé.
-- Pas de lien de téléchargement : CTA « Notify me at launch » (liste d'attente).
+- Pas de lien de téléchargement : CTA « Join the waitlist » (liste d'attente) ; rien n'est sorti, ne jamais écrire « launch ».
 - Palette de l'app (thème Glass, `musicmanager/ui/glass.py`) : fonds `#07080A` / `#0D0F12` / `#15181D`, texte `#E9EDF2` / `#8A94A0`, accent bleu azur `#4A8DFF` (token `deck-a`), vert des afficheurs `#30D26A` (`readout`), deck B terre cuite `#D08B6C` (DJ Mixer). Polices Figtree et IBM Plex Mono (`src/lib/fonts.ts`). Logotype « Devo » blanc + « sound » bleu (`siteConfig.wordmark`).
 - Icônes : `lucide-react` (l'app est passée à Phosphor).

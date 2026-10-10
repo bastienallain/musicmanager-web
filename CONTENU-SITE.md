@@ -13,10 +13,10 @@ Ce document décrit le contenu de la page d'accueil, section par section, avec t
 | Point | Où en est-on | En attendant |
 | --- | --- | --- |
 | **Nom de l'app** | **Devosound** (décision du 5 octobre 2026). Le dépôt et le paquet Python de l'app gardent le nom `MusicManager`. | `siteConfig.name` reste la seule source du nom sur le site. |
-| **Plateformes** | macOS (Apple Silicon) au lancement. Windows et Linux sont annoncés « coming soon ». | Pas de date ni de fonctionnalité promise pour Windows et Linux (`siteConfig.platforms`). |
+| **Plateformes** | Rien n'est sorti. macOS (Apple Silicon) arrive en premier, puis Windows et Linux, tous « coming soon ». | Pas de date ni de fonctionnalité promise pour Windows et Linux (`siteConfig.platforms`). |
 | **Section Tarifs** (`pricing`) | Affichée à la demande de Bastien, avec des montants **indicatifs**. | Marquer clairement les montants comme provisoires ; ils restent à valider. |
 | **Témoignages** (`testimonials`) | Le modèle contient de faux avis. | Les supprimer. Aucun témoignage inventé : on garde seulement de vraies citations, avec l'accord de leur auteur. |
-| **Téléchargement** | L'app n'est pas encore distribuée. | Bouton « Notify me at launch » (liste d'attente), sans lien de téléchargement. |
+| **Téléchargement** | L'app n'est pas encore distribuée. | Bouton « Join the waitlist » (liste d'attente), sans lien de téléchargement. |
 | **Langue** | Anglais (décision du 3 octobre 2026). | Une version française pourra venir plus tard. |
 | **DSD** | Le moteur DSD est complet et testé, mais les fichiers `.dsf` et `.dff` ne sont pas reconnus par le scan : ils n'entrent pas dans la bibliothèque (#182 de l'app). | Le site parle du DSD comme d'une capacité du moteur, en disant qu'on ne peut pas encore ajouter ces fichiers. Rien sur le DSD dans le hero, les formats ni les tarifs. |
 | **Streaming DLNA** | Validé seulement sur un renderer simulé ; aucune marque essayée en vrai (#117 de l'app). | Pas de noms de marques ni de « tout streamer est compatible ». |
@@ -266,7 +266,7 @@ Polices : Figtree pour le texte, IBM Plex Mono pour les chiffres. Icônes Phosph
   Oui, l'app ne touche pas aux données des autres logiciels quand elle écrit des tags.
 
 - **Sur quels systèmes ?**
-  Mac (Apple Silicon) au lancement. Windows et Linux arrivent plus tard.
+  Aucun pour l'instant : l'app n'est pas sortie. Mac (Apple Silicon) d'abord, puis Windows et Linux.
 
 ---
 
@@ -304,7 +304,7 @@ Polices : Figtree pour le texte, IBM Plex Mono pour les chiffres. Icônes Phosph
 | `faqs` | La section 6 |
 | `pricing` | Montants indicatifs, présentés comme provisoires (section 1) |
 | `testimonials` | Vide tant qu'il n'y a pas de vraies citations |
-| `platforms` | macOS au lancement, Windows et Linux « coming soon » |
+| `platforms` | macOS d'abord, puis Windows et Linux, tous « coming soon » |
 | `links` | Contact (à venir), GitHub si le dépôt devient public (décision de Bastien) |
 
 Les icônes du site viennent de `lucide-react`.
